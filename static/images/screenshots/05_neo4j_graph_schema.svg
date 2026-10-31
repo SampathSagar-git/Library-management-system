@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 650" width="100%" height="100%">
+  <defs>
+    <linearGradient id="graphBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#3b82f6" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <rect width="1100" height="650" fill="url(#graphBg)"/>
+
+  <!-- Title -->
+  <text x="550" y="50" font-family="'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="900" fill="#ffffff" text-anchor="middle">
+    Neo4j Graph Database Topology &amp; Knowledge Network
+  </text>
+  <text x="550" y="75" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" fill="#94a3b8" text-anchor="middle">
+    Mapped Nodes &amp; Relationships Powering Campus Collaborative Filtering Recommendations
+  </text>
+
+  <!-- Edges (Lines) -->
+  <!-- Student -> Book (BORROWED) -->
+  <line x1="280" y1="200" x2="520" y2="200" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <rect x="350" y="188" width="100" height="22" rx="4" fill="#1e293b"/>
+  <text x="400" y="203" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="700" fill="#60a5fa" text-anchor="middle">:BORROWED</text>
+
+  <!-- Student -> Desk (BOOKED) -->
+  <line x1="280" y1="220" x2="400" y2="380" stroke="#10b981" stroke-width="2.5"/>
+  <rect x="300" y="300" width="80" height="22" rx="4" fill="#1e293b"/>
+  <text x="340" y="315" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="700" fill="#34d399" text-anchor="middle">:BOOKED</text>
+
+  <!-- Student -> Category (INTERESTED_IN) -->
+  <line x1="250" y1="250" x2="250" y2="440" stroke="#ec4899" stroke-width="2.5"/>
+  <rect x="195" y="340" width="110" height="22" rx="4" fill="#1e293b"/>
+  <text x="250" y="355" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="700" fill="#f472b6" text-anchor="middle">:INTERESTED_IN</text>
+
+  <!-- Staff -> Book (BORROWED) -->
+  <line x1="280" y1="120" x2="530" y2="180" stroke="#06b6d4" stroke-width="2.5"/>
+  <rect x="380" y="135" width="95" height="22" rx="4" fill="#1e293b"/>
+  <text x="427" y="150" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="700" fill="#22d3ee" text-anchor="middle">:BORROWED</text>
+
+  <!-- Staff -> Desk (BOOKED) -->
+  <line x1="220" y1="140" x2="410" y2="390" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+  <!-- Book -> Author (WRITTEN_BY) -->
+  <line x1="600" y1="180" x2="800" y2="140" stroke="#8b5cf6" stroke-width="2.5"/>
+  <rect x="670" y="145" width="100" height="22" rx="4" fill="#1e293b"/>
+  <text x="720" y="160" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="700" fill="#c084fc" text-anchor="middle">:WRITTEN_BY</text>
+
+  <!-- Book -> Category (BELONGS_TO) -->
+  <line x1="560" y1="240" x2="300" y2="460" stroke="#f59e0b" stroke-width="2.5"/>
+  <rect x="420" y="350" width="105" height="22" rx="4" fill="#1e293b"/>
+  <text x="472" y="365" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="700" fill="#fbbf24" text-anchor="middle">:BELONGS_TO</text>
+
+  <!-- Co-borrowing Path (Peer Student 2 -> Book 1 and Book 2) -->
+  <line x1="780" y1="300" x2="600" y2="220" stroke="#eab308" stroke-width="2.5" stroke-dasharray="6,4"/>
+  <rect x="660" y="245" width="95" height="22" rx="4" fill="#1e293b"/>
+  <text x="707" y="260" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="700" fill="#fde047" text-anchor="middle">:BORROWED</text>
+
+  <line x1="820" y1="340" x2="820" y2="460" stroke="#eab308" stroke-width="2.5" stroke-dasharray="6,4"/>
+  <rect x="830" y="390" width="140" height="22" rx="4" fill="#1e293b"/>
+  <text x="900" y="405" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="700" fill="#fde047" text-anchor="middle">:BORROWED (Target)</text>
+
+  <!-- NODES -->
+  <!-- Student 1 Node -->
+  <circle cx="240" cy="200" r="42" fill="#1e3a8a" stroke="#3b82f6" stroke-width="3" filter="url(#glow)"/>
+  <text x="240" y="195" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">Student</text>
+  <text x="240" y="212" font-family="'Segoe UI', Roboto, sans-serif" font-size="9" fill="#93c5fd" text-anchor="middle">Alex Turner</text>
+
+  <!-- Staff Node -->
+  <circle cx="240" cy="100" r="38" fill="#083344" stroke="#06b6d4" stroke-width="3"/>
+  <text x="240" y="96" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">Staff</text>
+  <text x="240" y="112" font-family="'Segoe UI', Roboto, sans-serif" font-size="9" fill="#67e8f9" text-anchor="middle">Prof. Miller</text>
+
+  <!-- Book 1 Node -->
+  <circle cx="560" cy="200" r="44" fill="#4c1d95" stroke="#8b5cf6" stroke-width="3" filter="url(#glow)"/>
+  <text x="560" y="195" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">Book</text>
+  <text x="560" y="212" font-family="'Segoe UI', Roboto, sans-serif" font-size="9" fill="#c4b5fd" text-anchor="middle">AI: Modern App</text>
+
+  <!-- Author Node -->
+  <circle cx="840" cy="130" r="38" fill="#581c87" stroke="#a855f7" stroke-width="3"/>
+  <text x="840" y="126" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">Author</text>
+  <text x="840" y="142" font-family="'Segoe UI', Roboto, sans-serif" font-size="9" fill="#e9d5ff" text-anchor="middle">Stuart Russell</text>
+
+  <!-- Desk Node -->
+  <circle cx="430" cy="410" r="38" fill="#064e3b" stroke="#10b981" stroke-width="3"/>
+  <text x="430" y="406" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">Desk</text>
+  <text x="430" y="422" font-family="'Segoe UI', Roboto, sans-serif" font-size="9" fill="#6ee7b7" text-anchor="middle">Desk B201</text>
+
+  <!-- Category Node -->
+  <circle cx="250" cy="480" r="40" fill="#831843" stroke="#ec4899" stroke-width="3"/>
+  <text x="250" y="476" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">Category</text>
+  <text x="250" y="492" font-family="'Segoe UI', Roboto, sans-serif" font-size="9" fill="#fbcfe8" text-anchor="middle">Computer Science</text>
+
+  <!-- Peer Student 2 Node -->
+  <circle cx="820" cy="300" r="40" fill="#1e3a8a" stroke="#eab308" stroke-width="3"/>
+  <text x="820" y="295" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">Student B</text>
+  <text x="820" y="312" font-family="'Segoe UI', Roboto, sans-serif" font-size="9" fill="#fde047" text-anchor="middle">Sarah Jenkins</text>
+
+  <!-- Recommended Book 2 Node -->
+  <circle cx="820" cy="500" r="45" fill="#4c1d95" stroke="#eab308" stroke-width="3" filter="url(#glow)"/>
+  <text x="820" y="495" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="900" fill="#fde047" text-anchor="middle">RECOMMENDED</text>
+  <text x="820" y="512" font-family="'Segoe UI', Roboto, sans-serif" font-size="9" fill="#ffffff" text-anchor="middle">Data-Intensive Apps</text>
+
+  <!-- Collaborative Filtering Path Legend Card -->
+  <rect x="50" y="550" width="1000" height="70" rx="10" fill="#1e293b" stroke="#334155"/>
+  <text x="75" y="575" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="800" fill="#fde047">
+    Graph Recommendation Traversal Logic:
+  </text>
+  <text x="75" y="598" font-family="'Courier New', monospace" font-size="11" fill="#cbd5e1">
+    MATCH (u:Student {id: $uid})-[:BORROWED]->(b:Book)&lt;-[:BORROWED]-(other:Student)-[:BORROWED]->(rec:Book) WHERE NOT (u)-[:BORROWED]->(rec) RETURN rec
+  </text>
+</svg>

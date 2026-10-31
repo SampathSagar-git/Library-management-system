@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#eff6ff"/>
+    </linearGradient>
+    <linearGradient id="heroTextGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="btnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="700" fill="url(#bgGrad)"/>
+
+  <!-- Top Navigation Bar -->
+  <rect x="0" y="0" width="1200" height="64" fill="#ffffff" filter="url(#shadow)"/>
+  <rect x="40" y="16" width="32" height="32" rx="8" fill="#2563eb"/>
+  <text x="56" y="38" font-family="'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="900" fill="#ffffff" text-anchor="middle">S</text>
+  <text x="82" y="38" font-family="'Segoe UI', Roboto, sans-serif" font-size="18" font-weight="800" fill="#0f172a">Smart<tspan fill="#2563eb">Library</tspan></text>
+
+  <!-- Nav Links -->
+  <text x="240" y="38" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="600" fill="#2563eb">Home</text>
+  <text x="320" y="38" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="500" fill="#475569">Books Catalog</text>
+  <text x="440" y="38" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="500" fill="#475569">Book a Desk</text>
+  <text x="550" y="38" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="500" fill="#475569">Loans</text>
+
+  <!-- Right Badges -->
+  <rect x="880" y="18" width="120" height="28" rx="14" fill="#dcfce7"/>
+  <text x="940" y="37" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#15803d" text-anchor="middle">● Mongo: Connected</text>
+
+  <rect x="1015" y="18" width="145" height="28" rx="14" fill="#ede9fe"/>
+  <text x="1087" y="37" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#6d28d9" text-anchor="middle">● Neo4j: Graph Engine</text>
+
+  <!-- Hero Section -->
+  <rect x="60" y="90" width="220" height="26" rx="13" fill="#dbeafe"/>
+  <text x="170" y="108" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" fill="#1d4ed8" text-anchor="middle">★ Next-Gen Campus Library Platform</text>
+
+  <text x="60" y="165" font-family="'Segoe UI', Roboto, sans-serif" font-size="42" font-weight="900" fill="#0f172a">Your Smart Library,</text>
+  <text x="60" y="215" font-family="'Segoe UI', Roboto, sans-serif" font-size="42" font-weight="900" fill="url(#heroTextGrad)">One Click Away.</text>
+
+  <text x="60" y="255" font-family="'Segoe UI', Roboto, sans-serif" font-size="15" fill="#64748b" width="500">
+    Seamlessly borrow physical and digital books, reserve study pods in real-time, track loan due
+  </text>
+  <text x="60" y="278" font-family="'Segoe UI', Roboto, sans-serif" font-size="15" fill="#64748b">
+    dates, and discover literature tailored to your research using knowledge graph AI.
+  </text>
+
+  <!-- Search Bar -->
+  <rect x="60" y="310" width="520" height="52" rx="26" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" filter="url(#shadow)"/>
+  <circle cx="85" cy="336" r="7" fill="none" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="90" y1="341" x2="96" y2="347" stroke="#94a3b8" stroke-width="2"/>
+  <text x="110" y="342" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" fill="#94a3b8">Search by title, author, ISBN, or topic...</text>
+  <rect x="470" y="316" width="100" height="40" rx="20" fill="url(#btnGrad)"/>
+  <text x="520" y="341" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">Search</text>
+
+  <!-- CTA Buttons -->
+  <rect x="60" y="380" width="180" height="44" rx="10" fill="url(#btnGrad)"/>
+  <text x="150" y="407" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">Student &amp; Staff Login</text>
+
+  <rect x="255" y="380" width="180" height="44" rx="10" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="345" y="407" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#2563eb" text-anchor="middle">Explore Desk Booking</text>
+
+  <!-- Hero Visual Card (Right) -->
+  <rect x="680" y="95" width="460" height="340" rx="20" fill="#ffffff" filter="url(#shadow)"/>
+  <text x="710" y="135" font-family="'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="800" fill="#0f172a">Live Desk Occupancy</text>
+  <rect x="1030" y="120" width="85" height="22" rx="11" fill="#dcfce7"/>
+  <text x="1072" y="135" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#15803d" text-anchor="middle">● Active</text>
+
+  <!-- Zone Mini Preview -->
+  <rect x="710" y="160" width="400" height="90" rx="12" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="725" y="185" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" fill="#475569">Quiet Study Pods (Zone A)</text>
+  <rect x="725" y="200" width="80" height="36" rx="6" fill="#10b981"/>
+  <text x="765" y="222" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">A101 Avail</text>
+
+  <rect x="815" y="200" width="80" height="36" rx="6" fill="#10b981"/>
+  <text x="855" y="222" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">A102 Avail</text>
+
+  <rect x="905" y="200" width="80" height="36" rx="6" fill="#f59e0b"/>
+  <text x="945" y="222" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">A103 Rsvd</text>
+
+  <rect x="995" y="200" width="80" height="36" rx="6" fill="#ef4444"/>
+  <text x="1035" y="222" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">A104 Occ</text>
+
+  <rect x="710" y="270" width="400" height="60" rx="12" fill="#faf5ff" stroke="#e9d5ff"/>
+  <circle cx="735" cy="300" r="16" fill="#7c3aed"/>
+  <text x="735" y="306" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">✦</text>
+  <text x="765" y="296" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#0f172a">Graph AI Recommendations</text>
+  <text x="765" y="314" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" fill="#64748b">Powered by collaborative Neo4j borrowing graph</text>
+
+  <!-- Statistics Counters Row -->
+  <rect x="60" y="465" width="250" height="110" rx="14" fill="#ffffff" filter="url(#shadow)"/>
+  <text x="90" y="515" font-family="'Segoe UI', Roboto, sans-serif" font-size="32" font-weight="900" fill="#0f172a">8</text>
+  <text x="90" y="540" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#64748b">Academic Titles</text>
+
+  <rect x="340" y="465" width="250" height="110" rx="14" fill="#ffffff" filter="url(#shadow)"/>
+  <text x="370" y="515" font-family="'Segoe UI', Roboto, sans-serif" font-size="32" font-weight="900" fill="#10b981">20</text>
+  <text x="370" y="540" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#64748b">Available Copies</text>
+
+  <rect x="620" y="465" width="250" height="110" rx="14" fill="#ffffff" filter="url(#shadow)"/>
+  <text x="650" y="515" font-family="'Segoe UI', Roboto, sans-serif" font-size="32" font-weight="900" fill="#2563eb">4</text>
+  <text x="650" y="540" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#64748b">Active Students &amp; Staff</text>
+
+  <rect x="900" y="465" width="240" height="110" rx="14" fill="#ffffff" filter="url(#shadow)"/>
+  <text x="930" y="515" font-family="'Segoe UI', Roboto, sans-serif" font-size="32" font-weight="900" fill="#7c3aed">16</text>
+  <text x="930" y="540" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#64748b">Study Desks &amp; Pods</text>
+
+  <!-- Bottom Featured Books Bar Preview -->
+  <rect x="60" y="600" width="1080" height="75" rx="12" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="85" y="642" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="800" fill="#0f172a">Featured Catalog:</text>
+  <text x="215" y="642" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#2563eb">Artificial Intelligence: A Modern Approach</text>
+  <text x="500" y="642" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" fill="#64748b">• Designing Data-Intensive Applications • Introduction to Algorithms (CLRS) • Clean Code</text>
+</svg>

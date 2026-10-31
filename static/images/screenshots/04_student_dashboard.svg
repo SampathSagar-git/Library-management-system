@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" width="100%" height="100%">
+  <defs>
+    <linearGradient id="stuBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#f1f5f9"/>
+    </linearGradient>
+    <filter id="stuShadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.06"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="750" fill="url(#stuBg)"/>
+
+  <!-- Student Banner -->
+  <rect x="40" y="25" width="1120" height="110" rx="16" fill="#ffffff" stroke="#e2e8f0" filter="url(#stuShadow)"/>
+  <rect x="65" y="42" width="105" height="22" rx="11" fill="#2563eb"/>
+  <text x="117" y="57" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">Student Portal</text>
+
+  <text x="65" y="90" font-family="'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="900" fill="#0f172a">Welcome back, Alex Turner!</text>
+  <text x="65" y="112" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" fill="#64748b">
+    ID: <tspan font-weight="700" fill="#0f172a">STU-2024-8841</tspan> • Dept: <tspan font-weight="700" fill="#0f172a">Data Science &amp; AI</tspan> • Quota: <tspan font-weight="700" fill="#2563eb">5 Books</tspan>
+  </text>
+
+  <rect x="910" y="60" width="115" height="38" rx="8" fill="#2563eb"/>
+  <text x="967" y="84" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">Browse Books</text>
+
+  <rect x="1035" y="60" width="105" height="38" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="1087" y="84" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" fill="#2563eb" text-anchor="middle">Book a Desk</text>
+
+  <!-- 4 Stat Cards Row -->
+  <rect x="40" y="150" width="265" height="90" rx="12" fill="#ffffff" stroke="#e2e8f0" filter="url(#stuShadow)"/>
+  <text x="60" y="175" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#64748b">ACTIVE LOANS</text>
+  <text x="60" y="210" font-family="'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="900" fill="#2563eb">1</text>
+  <text x="120" y="210" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" fill="#94a3b8">of 5 allowed</text>
+
+  <rect x="325" y="150" width="265" height="90" rx="12" fill="#ffffff" stroke="#e2e8f0" filter="url(#stuShadow)"/>
+  <text x="345" y="175" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#64748b">RESERVATIONS</text>
+  <text x="345" y="210" font-family="'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="900" fill="#f59e0b">0</text>
+  <text x="405" y="210" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" fill="#94a3b8">holds pending</text>
+
+  <rect x="610" y="150" width="265" height="90" rx="12" fill="#ffffff" stroke="#e2e8f0" filter="url(#stuShadow)"/>
+  <text x="630" y="175" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#64748b">DESK BOOKINGS</text>
+  <text x="630" y="210" font-family="'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="900" fill="#10b981">1</text>
+  <text x="690" y="210" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" fill="#94a3b8">Active: Desk B201</text>
+
+  <rect x="895" y="150" width="265" height="90" rx="12" fill="#ffffff" stroke="#e2e8f0" filter="url(#stuShadow)"/>
+  <text x="915" y="175" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#64748b">OVERDUE FINES</text>
+  <text x="915" y="210" font-family="'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="900" fill="#10b981">$0.00</text>
+  <text x="1005" y="210" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" fill="#94a3b8">Good standing</text>
+
+  <!-- Neo4j Graph Recommendations Row -->
+  <text x="40" y="275" font-family="'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="800" fill="#0f172a">
+    ✨ AI &amp; Graph-Powered Book Recommendations
+  </text>
+  <rect x="1005" y="260" width="155" height="24" rx="12" fill="#faf5ff" stroke="#d8b4fe"/>
+  <text x="1082" y="276" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#7c3aed" text-anchor="middle">✦ Neo4j Graph Engine</text>
+
+  <!-- Rec 1 -->
+  <rect x="40" y="295" width="265" height="175" rx="12" fill="#ffffff" stroke="#e2e8f0" filter="url(#stuShadow)"/>
+  <rect x="55" y="308" width="80" height="20" rx="4" fill="#0f172a"/>
+  <text x="95" y="322" font-family="'Segoe UI', Roboto, sans-serif" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">Data Science</text>
+  <text x="55" y="350" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="800" fill="#0f172a">Deep Learning with Python</text>
+  <text x="55" y="368" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" fill="#64748b">François Chollet</text>
+  <rect x="55" y="380" width="235" height="26" rx="6" fill="#f8fafc"/>
+  <text x="65" y="397" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" fill="#2563eb">🔗 Matches your topic interest in AI</text>
+  <rect x="55" y="415" width="235" height="34" rx="6" fill="#2563eb"/>
+  <text x="172" y="436" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">Request Loan</text>
+
+  <!-- Rec 2 -->
+  <rect x="325" y="295" width="265" height="175" rx="12" fill="#ffffff" stroke="#e2e8f0" filter="url(#stuShadow)"/>
+  <rect x="340" y="308" width="115" height="20" rx="4" fill="#0f172a"/>
+  <text x="397" y="322" font-family="'Segoe UI', Roboto, sans-serif" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">Software Eng</text>
+  <text x="340" y="350" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="800" fill="#0f172a">Designing Data-Intensive Apps</text>
+  <text x="340" y="368" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" fill="#64748b">Martin Fowler</text>
+  <rect x="340" y="380" width="235" height="26" rx="6" fill="#f8fafc"/>
+  <text x="350" y="397" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" fill="#7c3aed">🔗 Co-borrowed by peers who read CLRS</text>
+  <rect x="340" y="415" width="235" height="34" rx="6" fill="#2563eb"/>
+  <text x="457" y="436" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">Request Loan</text>
+
+  <!-- Rec 3 -->
+  <rect x="610" y="295" width="265" height="175" rx="12" fill="#ffffff" stroke="#e2e8f0" filter="url(#stuShadow)"/>
+  <rect x="625" y="308" width="85" height="20" rx="4" fill="#0f172a"/>
+  <text x="667" y="322" font-family="'Segoe UI', Roboto, sans-serif" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">Algorithms</text>
+  <text x="625" y="350" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="800" fill="#0f172a">Introduction to Algorithms</text>
+  <text x="625" y="368" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" fill="#64748b">Thomas Cormen</text>
+  <rect x="625" y="380" width="235" height="26" rx="6" fill="#f8fafc"/>
+  <text x="635" y="397" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" fill="#059669">🔗 Campus popular academic reference</text>
+  <rect x="625" y="415" width="235" height="34" rx="6" fill="#2563eb"/>
+  <text x="742" y="436" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">Request Loan</text>
+
+  <!-- Rec 4 -->
+  <rect x="895" y="295" width="265" height="175" rx="12" fill="#ffffff" stroke="#e2e8f0" filter="url(#stuShadow)"/>
+  <rect x="910" y="308" width="95" height="20" rx="4" fill="#0f172a"/>
+  <text x="957" y="322" font-family="'Segoe UI', Roboto, sans-serif" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">Data Science</text>
+  <text x="910" y="350" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="800" fill="#0f172a">Hands-On Machine Learning</text>
+  <text x="910" y="368" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" fill="#64748b">Aurélien Géron</text>
+  <rect x="910" y="380" width="235" height="26" rx="6" fill="#f8fafc"/>
+  <text x="920" y="397" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" fill="#2563eb">🔗 Frequently borrowed with Keras</text>
+  <rect x="910" y="415" width="235" height="34" rx="6" fill="#2563eb"/>
+  <text x="1027" y="436" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">Request Loan</text>
+
+  <!-- Active Loans Table Preview (Bottom) -->
+  <rect x="40" y="495" width="750" height="230" rx="14" fill="#ffffff" stroke="#e2e8f0" filter="url(#stuShadow)"/>
+  <text x="60" y="525" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="800" fill="#0f172a">📖 My Active Loans (1 / 5)</text>
+
+  <rect x="60" y="545" width="710" height="30" rx="6" fill="#f8fafc"/>
+  <text x="75" y="565" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="800" fill="#475569">BOOK TITLE</text>
+  <text x="380" y="565" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="800" fill="#475569">DUE DATE</text>
+  <text x="510" y="565" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="800" fill="#475569">STATUS</text>
+  <text x="640" y="565" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="800" fill="#475569">ACTION</text>
+
+  <!-- Loan Row -->
+  <text x="75" y="605" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" fill="#0f172a">Artificial Intelligence: A Modern Approach</text>
+  <text x="75" y="622" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" fill="#64748b">Stuart Russell &amp; Peter Norvig • ISBN: 978-0134610993</text>
+  <text x="380" y="612" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" fill="#0f172a">Nov 14, 2026</text>
+  <rect x="510" y="600" width="70" height="20" rx="4" fill="#dcfce7"/>
+  <text x="545" y="614" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="700" fill="#15803d" text-anchor="middle">Active Loan</text>
+  <rect x="640" y="595" width="90" height="28" rx="6" fill="#eff6ff" stroke="#2563eb"/>
+  <text x="685" y="614" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#2563eb" text-anchor="middle">Renew (0/2)</text>
+
+  <!-- My Desk Booking Preview Card (Right) -->
+  <rect x="815" y="495" width="345" height="230" rx="14" fill="#ffffff" stroke="#e2e8f0" filter="url(#stuShadow)"/>
+  <text x="835" y="525" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="800" fill="#0f172a">🪑 My Active Desk Reservation</text>
+
+  <rect x="835" y="545" width="305" height="110" rx="10" fill="#0f172a"/>
+  <text x="855" y="575" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#93c5fd">DESK PASS: B201</text>
+  <text x="855" y="605" font-family="'Segoe UI', Roboto, sans-serif" font-size="18" font-weight="900" fill="#ffffff">Collaborative Zone</text>
+  <text x="855" y="628" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" fill="#cbd5e1">Date: Today • 09:00 - 11:00 AM (2h)</text>
+
+  <rect x="835" y="670" width="305" height="34" rx="6" fill="#ffffff" stroke="#ef4444"/>
+  <text x="987" y="692" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" fill="#ef4444" text-anchor="middle">Cancel Reservation</text>
+</svg>

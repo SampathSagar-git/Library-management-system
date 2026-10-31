@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}Book Reservations - Smart Library{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+      <h2 class="fw-bold mb-1">Book Reservations</h2>
+      <p class="text-muted small mb-0">Track advance reservations on academic books currently on loan.</p>
+    </div>
+    <a href="{{ url_for('books.catalog') }}" class="btn btn-outline-smart">
+      <i class="fa-solid fa-magnifying-glass me-1"></i> Browse Books to Reserve
+    </a>
+  </div>
+
+  <div class="card-smart bg-white overflow-hidden">
+    {% if reservations %}
+    <div class="table-responsive">
+      <table class="table table-custom mb-0">
+        <thead>
+          <tr>
+            <th>Book Title</th>
+            {% if current_user.is_admin or current_user.is_staff %}
+            <th>Borrower</th>
+            {% endif %}
+            <th>Reserved Date</th>
+            <th>Expiry Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in reservations %}
+          <tr>
+            <td>
+              <div class="d-flex align-items-center gap-3">
+                <img src="{{ r.book_cover }}" alt="" class="rounded-2 shadow-sm" style="width: 42px; height: 56px; object-fit: cover;">
+                <div>
+                  <div class="fw-bold text-dark">{{ r.book_title }}</div>
+                  <div class="text-muted small">By {{ r.book_author }}</div>
+                </div>
+              </div>
+            </td>
+            {% if current_user.is_admin or current_user.is_staff %}
+            <td>
+              <div class="fw-semibold">{{ r.user_name }}</div>
+              <div class="text-muted small">{{ r.user_email }}</div>
+            </td>
+            {% endif %}
+            <td>{{ r.reservation_date.strftime('%Y-%m-%d %H:%M') if r.reservation_date else 'N/A' }}</td>
+            <td>
+              {% if r.expiry_date %}
+                <span class="text-muted">{{ r.expiry_date.strftime('%Y-%m-%d') }}</span>
+              {% else %}
+                <span class="text-muted">&mdash;</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if r.status == 'approved' %}
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1">Ready for Pickup</span>
+              {% elif r.status == 'pending' %}
+                <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-3 py-1">Pending Approval</span>
+              {% elif r.status == 'fulfilled' %}
+                <span class="badge bg-info-subtle text-info px-3 py-1">Fulfilled</span>
+              {% elif r.status == 'cancelled' %}
+                <span class="badge bg-secondary-subtle text-secondary px-3 py-1">Cancelled</span>
+              {% else %}
+                <span class="badge bg-danger-subtle text-danger px-3 py-1">Declined</span>
+              {% endif %}
+            </td>
+            <td>
+              <div class="d-flex gap-2">
+                {% if (current_user.is_admin or current_user.is_staff) and r.status == 'pending' %}
+                <form action="{{ url_for('booking.approve_reservation', reservation_id=r.id) }}" method="POST">
+                  <button type="submit" class="btn btn-sm btn-success" title="Approve">
+                    <i class="fa-solid fa-check"></i> Approve
+                  </button>
+                </form>
+                <form action="{{ url_for('booking.reject_reservation', reservation_id=r.id) }}" method="POST">
+                  <button type="submit" class="btn btn-sm btn-outline-danger" title="Reject">
+                    <i class="fa-solid fa-xmark"></i> Reject
+                  </button>
+                </form>
+                {% endif %}
+
+                {% if r.status in ['pending', 'approved'] %}
+                <form action="{{ url_for('booking.cancel_reservation', reservation_id=r.id) }}" method="POST" onsubmit="return confirm('Cancel this reservation?');">
+                  <button type="submit" class="btn btn-sm btn-outline-secondary">
+                    Cancel
+                  </button>
+                </form>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="text-center py-5 text-muted">
+      <i class="fa-solid fa-bookmark fs-2 text-secondary mb-2 d-block"></i>
+      No book reservations recorded yet.
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

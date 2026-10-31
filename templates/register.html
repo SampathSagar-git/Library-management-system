@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% block title %}Register - Smart Library System{% endblock %}
+
+{% block content %}
+<div class="container py-5 my-md-3">
+  <div class="row justify-content-center">
+    <div class="col-md-9 col-lg-7">
+      <div class="card-smart p-4 p-md-5 bg-white">
+        <div class="text-center mb-4">
+          <div class="brand-icon mx-auto mb-3" style="width: 48px; height: 48px;">
+            <i class="fa-solid fa-user-plus fs-4"></i>
+          </div>
+          <h3 class="fw-bold text-dark">Create Library Account</h3>
+          <p class="text-muted small">Register for campus books borrowing, desk reservations &amp; graph recommendations</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('auth.register') }}">
+          <!-- Role Selector -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold small text-dark">Select Your Role</label>
+            <div class="row g-3">
+              <div class="col-6">
+                <input type="radio" class="btn-check" name="role" id="roleStudent" value="student" checked onchange="toggleRoleFields('student')">
+                <label class="btn btn-outline-primary w-100 py-3 rounded-3 text-start" for="roleStudent">
+                  <i class="fa-solid fa-user-graduate fs-5 d-block mb-1"></i>
+                  <strong>Student</strong>
+                  <div class="text-muted small">14-day loans, quiet desks</div>
+                </label>
+              </div>
+              <div class="col-6">
+                <input type="radio" class="btn-check" name="role" id="roleStaff" value="staff" onchange="toggleRoleFields('staff')">
+                <label class="btn btn-outline-primary w-100 py-3 rounded-3 text-start" for="roleStaff">
+                  <i class="fa-solid fa-chalkboard-user fs-5 d-block mb-1"></i>
+                  <strong>Faculty / Staff</strong>
+                  <div class="text-muted small">30-day loans, faculty pods</div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small text-dark">Full Name</label>
+              <input type="text" name="name" class="form-control form-control-smart" placeholder="e.g. Jane Doe" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small text-dark">Campus Email</label>
+              <input type="email" name="email" class="form-control form-control-smart" placeholder="e.g. j.doe@university.edu" required>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small text-dark">Department / Faculty</label>
+              <select name="department" class="form-select form-select-smart" required>
+                <option value="Computer Science & AI">Computer Science &amp; AI</option>
+                <option value="Data Science & Analytics">Data Science &amp; Analytics</option>
+                <option value="Software Systems">Software Systems</option>
+                <option value="Applied Mathematics">Applied Mathematics</option>
+                <option value="Physics & Engineering">Physics &amp; Engineering</option>
+                <option value="Business & Finance">Business &amp; Finance</option>
+                <option value="Humanities & Arts">Humanities &amp; Arts</option>
+              </select>
+            </div>
+            <div class="col-md-6" id="idFieldContainer">
+              <label class="form-label fw-semibold small text-dark" id="idFieldLabel">Student ID Number</label>
+              <input type="text" name="student_id" id="roleIdInput" class="form-control form-control-smart" placeholder="STU-2024-XXXX">
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small text-dark">Password</label>
+              <input type="password" name="password" class="form-control form-control-smart" placeholder="At least 6 characters" minlength="6" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small text-dark">Confirm Password</label>
+              <input type="password" name="confirm_password" class="form-control form-control-smart" placeholder="Re-enter password" minlength="6" required>
+            </div>
+          </div>
+
+          <!-- Academic Interests for Neo4j Graph Recommendation -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold small text-dark d-flex justify-content-between align-items-center">
+              <span>Topics of Interest <span class="badge bg-purple-subtle text-primary border ms-1" style="color: var(--soft-purple); background: var(--purple-subtle);"><i class="fa-solid fa-diagram-project me-1"></i> Neo4j AI</span></span>
+              <span class="text-muted small">Select your reading preferences</span>
+            </label>
+            <div class="p-3 bg-light rounded-3 border">
+              <div class="row g-2">
+                {% for cat in categories %}
+                <div class="col-md-6">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="interests" value="{{ cat.name }}" id="cat_{{ loop.index }}" {% if loop.index <= 2 %}checked{% endif %}>
+                    <label class="form-check-label small" for="cat_{{ loop.index }}">
+                      {{ cat.name }}
+                    </label>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary-smart w-100 py-2 justify-content-center mb-3">
+            <i class="fa-solid fa-user-check me-1"></i> Complete Registration
+          </button>
+        </form>
+
+        <div class="text-center small text-muted">
+          Already registered? 
+          <a href="{{ url_for('auth.login') }}" class="fw-semibold text-primary text-decoration-none">
+            Sign In here
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleRoleFields(role) {
+  const label = document.getElementById('idFieldLabel');
+  const input = document.getElementById('roleIdInput');
+  if (role === 'staff') {
+    label.innerText = 'Staff / Faculty ID';
+    input.placeholder = 'FAC-XXXX';
+    input.name = 'staff_id';
+  } else {
+    label.innerText = 'Student ID Number';
+    input.placeholder = 'STU-2024-XXXX';
+    input.name = 'student_id';
+  }
+}
+</script>
+{% endblock %}

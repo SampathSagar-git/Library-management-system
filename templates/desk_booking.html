@@ -1,0 +1,308 @@
+{% extends 'base.html' %}
+{% block title %}Desk Reservation System - Smart Library{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <!-- Page Header -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+      <div class="d-inline-flex align-items-center gap-2 bg-primary-subtle text-primary fw-semibold px-3 py-1 rounded-pill small mb-2">
+        <i class="fa-solid fa-chair"></i> Dedicated Smart Seating Module
+      </div>
+      <h2 class="fw-bold mb-1">Interactive Library Desk Booking</h2>
+      <p class="text-muted small mb-0">Select your preferred study zone, pick an available desk on the 2D floor layout, and confirm your slot.</p>
+    </div>
+    <!-- Desk Status Legend -->
+    <div class="desk-legend">
+      <div class="legend-item">
+        <div class="legend-color-dot" style="background-color: var(--desk-avail);"></div>
+        <span>Available</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color-dot" style="background-color: var(--desk-reserved);"></div>
+        <span>Reserved</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color-dot" style="background-color: var(--desk-occupied);"></div>
+        <span>Occupied</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color-dot" style="background-color: var(--desk-selected);"></div>
+        <span>Selected</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Left Column: Visual Floor Map -->
+    <div class="col-lg-8">
+      <div class="card-smart p-4 bg-white mb-4">
+        <!-- Date & Time Slot Filters -->
+        <div class="row g-3 align-items-center pb-3 mb-4 border-bottom">
+          <div class="col-md-4">
+            <label class="form-label small fw-semibold text-muted mb-1">Booking Date</label>
+            <input type="date" id="bookingDateInput" class="form-control form-control-smart" value="{{ selected_date }}" min="{{ today_date }}">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small fw-semibold text-muted mb-1">Start Time</label>
+            <select id="bookingTimeInput" class="form-select form-select-smart">
+              <option value="09:00">09:00 AM</option>
+              <option value="11:00">11:00 AM</option>
+              <option value="13:00">01:00 PM</option>
+              <option value="15:00">03:00 PM</option>
+              <option value="17:00">05:00 PM</option>
+              <option value="19:00">07:00 PM</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small fw-semibold text-muted mb-1">Duration</label>
+            <select id="bookingDurationInput" class="form-select form-select-smart">
+              <option value="1">1 Hour</option>
+              <option value="2" selected>2 Hours</option>
+              <option value="3">3 Hours</option>
+              <option value="4">4 Hours (Half Day)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 2D Visual Floor Map by Zones -->
+        <div class="floor-map-container">
+          <!-- Zone A: Quiet Study Pods -->
+          <div class="zone-block">
+            <div class="zone-header">
+              <div>
+                <span class="badge bg-success-subtle text-success border me-2">Zone A</span>
+                <strong class="text-dark">Quiet Study Pods</strong>
+                <span class="text-muted small ms-2"><i class="fa-solid fa-volume-xmark me-1"></i> Strictly Silent - Focus Booths</span>
+              </div>
+              <span class="small text-muted"><i class="fa-solid fa-plug me-1 text-primary"></i> Power Outlets</span>
+            </div>
+            <div class="desk-grid">
+              {% for d in desks if d.zone == 'Quiet Study Pods' %}
+              <div class="desk-seat available" data-desk-number="{{ d.desk_number }}" data-desk-zone="{{ d.zone }}">
+                <div class="desk-icon"><i class="fa-solid fa-desktop text-primary"></i></div>
+                <div class="desk-title fw-bold text-dark">{{ d.desk_number }}</div>
+                <div class="desk-status-text small text-success fw-medium">Available</div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Zone B: Collaborative Study Tables -->
+          <div class="zone-block">
+            <div class="zone-header">
+              <div>
+                <span class="badge bg-primary-subtle text-primary border me-2">Zone B</span>
+                <strong class="text-dark">Collaborative Zone</strong>
+                <span class="text-muted small ms-2"><i class="fa-solid fa-users me-1"></i> Group &amp; Project Discussions</span>
+              </div>
+              <span class="small text-muted"><i class="fa-solid fa-wifi me-1 text-primary"></i> High-Speed Mesh</span>
+            </div>
+            <div class="desk-grid">
+              {% for d in desks if d.zone == 'Collaborative Zone' %}
+              <div class="desk-seat available" data-desk-number="{{ d.desk_number }}" data-desk-zone="{{ d.zone }}">
+                <div class="desk-icon"><i class="fa-solid fa-table text-primary"></i></div>
+                <div class="desk-title fw-bold text-dark">{{ d.desk_number }}</div>
+                <div class="desk-status-text small text-success fw-medium">Available</div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Zone C: Tech & Media Lab -->
+          <div class="zone-block">
+            <div class="zone-header">
+              <div>
+                <span class="badge bg-info-subtle text-info border me-2">Zone C</span>
+                <strong class="text-dark">Tech &amp; Media Lab</strong>
+                <span class="text-muted small ms-2"><i class="fa-solid fa-display me-1"></i> Dual 4K Workstations</span>
+              </div>
+              <span class="small text-muted"><i class="fa-solid fa-bolt me-1 text-primary"></i> GPU Node Connected</span>
+            </div>
+            <div class="desk-grid">
+              {% for d in desks if d.zone == 'Tech & Media Lab' %}
+              <div class="desk-seat available" data-desk-number="{{ d.desk_number }}" data-desk-zone="{{ d.zone }}">
+                <div class="desk-icon"><i class="fa-solid fa-computer text-info"></i></div>
+                <div class="desk-title fw-bold text-dark">{{ d.desk_number }}</div>
+                <div class="desk-status-text small text-success fw-medium">Available</div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Zone D: Faculty & Research Suites -->
+          <div class="zone-block" style="background-color: #faf5ff; border-color: #d8b4fe;">
+            <div class="zone-header">
+              <div>
+                <span class="badge bg-purple-subtle text-primary border me-2" style="background: var(--purple-subtle); color: var(--soft-purple);">Zone D</span>
+                <strong class="text-dark">Faculty &amp; Research Suites</strong>
+                <span class="text-muted small ms-2"><i class="fa-solid fa-award me-1"></i> Dedicated Staff &amp; Postdoc Suites</span>
+              </div>
+              <span class="small text-muted"><i class="fa-solid fa-lock me-1 text-primary"></i> Private Access</span>
+            </div>
+            <div class="desk-grid">
+              {% for d in desks if d.zone == 'Faculty & Research Suites' %}
+              <div class="desk-seat available" data-desk-number="{{ d.desk_number }}" data-desk-zone="{{ d.zone }}">
+                <div class="desk-icon"><i class="fa-solid fa-briefcase text-purple" style="color: var(--soft-purple);"></i></div>
+                <div class="desk-title fw-bold text-dark">{{ d.desk_number }}</div>
+                <div class="desk-status-text small text-success fw-medium">Available</div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Reservation Confirmation Form & Pass -->
+    <div class="col-lg-4">
+      <div class="card-smart p-4 bg-white sticky-top" style="top: 90px;">
+        <h5 class="fw-bold mb-3"><i class="fa-solid fa-calendar-check text-primary me-2"></i>Confirm Reservation</h5>
+        
+        <div id="deskSelectionNotice" class="mb-3">
+          <div class="alert alert-light border text-muted py-2 mb-0">
+            <i class="fa-solid fa-hand-pointer me-1 text-primary"></i> Click any green desk on the floor map to select it.
+          </div>
+        </div>
+
+        <form id="deskBookingForm" action="{{ url_for('booking.reserve_desk') }}" method="POST">
+          <input type="hidden" name="desk_number" id="selectedDeskNumber" value="">
+          <input type="hidden" name="zone" id="selectedZone" value="">
+          <input type="hidden" name="booking_date" id="formBookingDate" value="{{ selected_date }}">
+          <input type="hidden" name="start_time" id="formStartTime" value="09:00">
+          <input type="hidden" name="duration_hours" id="formDuration" value="2">
+
+          <div class="mb-3">
+            <label class="form-label small fw-semibold text-muted">Study Purpose</label>
+            <input type="text" name="purpose" class="form-control form-control-smart" placeholder="e.g. Thesis Research, Exam Revision" value="Academic Study">
+          </div>
+
+          <div class="card bg-light border-0 p-3 rounded-3 mb-3 small">
+            <div class="d-flex justify-content-between mb-1">
+              <span class="text-muted">User:</span>
+              <strong class="text-dark">{{ current_user.name }}</strong>
+            </div>
+            <div class="d-flex justify-content-between mb-1">
+              <span class="text-muted">Role:</span>
+              <span class="badge bg-primary-subtle text-primary text-capitalize">{{ current_user.role }}</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span class="text-muted">Collision Check:</span>
+              <span class="text-success fw-bold"><i class="fa-solid fa-shield-check me-1"></i> Double-booking Protected</span>
+            </div>
+          </div>
+
+          <button type="submit" id="btnSubmitDeskBooking" class="btn btn-primary-smart w-100 py-3 justify-content-center" disabled>
+            <i class="fa-solid fa-check-to-slot me-1"></i> Confirm &amp; Generate Pass
+          </button>
+        </form>
+
+        <hr class="my-4 text-muted opacity-25">
+
+        <!-- Policy Note -->
+        <div class="small text-muted">
+          <i class="fa-solid fa-circle-info text-primary me-1"></i>
+          Reservations are held for 15 minutes past the start time. You may cancel your booking anytime before the session starts.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Personal Desk Reservation History -->
+  <div class="mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4 class="fw-bold mb-0"><i class="fa-solid fa-clock-rotate-left text-primary me-2"></i>My Desk Reservations</h4>
+      <span class="badge bg-light text-secondary border">{{ my_bookings|length }} Records</span>
+    </div>
+
+    <div class="card-smart bg-white overflow-hidden">
+      {% if my_bookings %}
+      <div class="table-responsive">
+        <table class="table table-custom mb-0">
+          <thead>
+            <tr>
+              <th>Desk #</th>
+              <th>Zone</th>
+              <th>Date</th>
+              <th>Time Window</th>
+              <th>Purpose</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for booking in my_bookings %}
+            <tr>
+              <td>
+                <span class="badge bg-primary px-3 py-2 fw-bold fs-6">{{ booking.desk_number }}</span>
+              </td>
+              <td><span class="fw-semibold text-dark">{{ booking.zone }}</span></td>
+              <td>{{ booking.booking_date }}</td>
+              <td>
+                <span class="badge bg-light text-dark border">
+                  {{ booking.start_time }} - {{ booking.end_time }} ({{ booking.duration_hours }}h)
+                </span>
+              </td>
+              <td class="text-muted small">{{ booking.purpose }}</td>
+              <td>
+                {% if booking.status == 'confirmed' %}
+                  <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1">Confirmed</span>
+                {% elif booking.status == 'cancelled' %}
+                  <span class="badge bg-secondary-subtle text-secondary px-3 py-1">Cancelled</span>
+                {% else %}
+                  <span class="badge bg-info-subtle text-info px-3 py-1">Completed</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if booking.status == 'confirmed' %}
+                <form action="{{ url_for('booking.cancel_desk', booking_id=booking.id) }}" method="POST" onsubmit="return confirm('Cancel this desk booking?');">
+                  <button type="submit" class="btn btn-outline-danger btn-sm">
+                    <i class="fa-solid fa-xmark me-1"></i> Cancel
+                  </button>
+                </form>
+                {% else %}
+                <span class="text-muted small">&mdash;</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="text-center py-5 text-muted">
+        <i class="fa-solid fa-chair fs-2 text-secondary mb-2 d-block"></i>
+        You have no desk reservation history yet. Pick a desk above to book your first study slot!
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Synchronize hidden inputs for the booking form with user controls
+document.addEventListener('DOMContentLoaded', () => {
+  const dateInput = document.getElementById('bookingDateInput');
+  const timeInput = document.getElementById('bookingTimeInput');
+  const durationInput = document.getElementById('bookingDurationInput');
+
+  const formDate = document.getElementById('formBookingDate');
+  const formTime = document.getElementById('formStartTime');
+  const formDuration = document.getElementById('formDuration');
+
+  function syncForm() {
+    if (formDate && dateInput) formDate.value = dateInput.value;
+    if (formTime && timeInput) formTime.value = timeInput.value;
+    if (formDuration && durationInput) formDuration.value = durationInput.value;
+  }
+
+  if (dateInput) dateInput.addEventListener('change', syncForm);
+  if (timeInput) timeInput.addEventListener('change', syncForm);
+  if (durationInput) durationInput.addEventListener('change', syncForm);
+
+  syncForm();
+});
+</script>
+{% endblock %}

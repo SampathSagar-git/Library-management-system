@@ -1,0 +1,172 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" width="100%" height="100%">
+  <defs>
+    <linearGradient id="deskBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#f1f5f9"/>
+    </linearGradient>
+    <filter id="deskShadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="750" fill="url(#deskBg)"/>
+
+  <!-- Page Header -->
+  <rect x="40" y="25" width="220" height="24" rx="12" fill="#dbeafe"/>
+  <text x="150" y="41" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#1d4ed8" text-anchor="middle">🪑 Dedicated Smart Seating Module</text>
+
+  <text x="40" y="80" font-family="'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="800" fill="#0f172a">Interactive Library Desk Booking System</text>
+  <text x="40" y="105" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" fill="#64748b">
+    Select your preferred study zone, pick an available desk on the 2D floor layout, and confirm your slot.
+  </text>
+
+  <!-- Legend -->
+  <rect x="730" y="45" width="430" height="40" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+  <rect x="745" y="58" width="14" height="14" rx="3" fill="#10b981"/>
+  <text x="765" y="70" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Available</text>
+
+  <rect x="840" y="58" width="14" height="14" rx="3" fill="#f59e0b"/>
+  <text x="860" y="70" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Reserved</text>
+
+  <rect x="940" y="58" width="14" height="14" rx="3" fill="#ef4444"/>
+  <text x="960" y="70" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Occupied</text>
+
+  <rect x="1040" y="58" width="14" height="14" rx="3" fill="#2563eb"/>
+  <text x="1060" y="70" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" fill="#0f172a">Selected</text>
+
+  <!-- 2D Floor Plan Canvas (Left 750px) -->
+  <rect x="40" y="130" width="750" height="580" rx="16" fill="#ffffff" stroke="#e2e8f0" filter="url(#deskShadow)"/>
+
+  <!-- Controls Bar -->
+  <rect x="60" y="150" width="710" height="48" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="75" y="180" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" fill="#475569">Date: 2026-10-31</text>
+  <text x="260" y="180" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" fill="#475569">Start Time: 09:00 AM</text>
+  <text x="480" y="180" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" fill="#475569">Duration: 2 Hours (09:00 - 11:00)</text>
+
+  <!-- Zone A: Quiet Study Pods -->
+  <rect x="60" y="215" width="345" height="230" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="6,4"/>
+  <rect x="75" y="225" width="60" height="20" rx="10" fill="#dcfce7"/>
+  <text x="105" y="239" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="800" fill="#15803d" text-anchor="middle">Zone A</text>
+  <text x="145" y="240" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="800" fill="#0f172a">Quiet Study Pods</text>
+
+  <!-- A101 (Available) -->
+  <rect x="75" y="260" width="75" height="75" rx="8" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/>
+  <text x="112" y="295" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="800" fill="#0f172a" text-anchor="middle">A101</text>
+  <text x="112" y="315" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#10b981" text-anchor="middle">Available</text>
+
+  <!-- A102 (Available) -->
+  <rect x="160" y="260" width="75" height="75" rx="8" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/>
+  <text x="197" y="295" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="800" fill="#0f172a" text-anchor="middle">A102</text>
+  <text x="197" y="315" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#10b981" text-anchor="middle">Available</text>
+
+  <!-- A103 (Reserved) -->
+  <rect x="245" y="260" width="75" height="75" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+  <text x="282" y="295" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="800" fill="#0f172a" text-anchor="middle">A103</text>
+  <text x="282" y="315" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#f59e0b" text-anchor="middle">Reserved</text>
+
+  <!-- A104 (Occupied) -->
+  <rect x="330" y="260" width="65" height="75" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+  <text x="362" y="295" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="800" fill="#0f172a" text-anchor="middle">A104</text>
+  <text x="362" y="315" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#ef4444" text-anchor="middle">Occupied</text>
+
+  <!-- Zone B: Collaborative Zone -->
+  <rect x="425" y="215" width="345" height="230" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="6,4"/>
+  <rect x="440" y="225" width="60" height="20" rx="10" fill="#dbeafe"/>
+  <text x="470" y="239" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="800" fill="#1d4ed8" text-anchor="middle">Zone B</text>
+  <text x="510" y="240" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="800" fill="#0f172a">Collaborative Zone</text>
+
+  <!-- B201 (Selected) -->
+  <rect x="440" y="260" width="75" height="75" rx="8" fill="#2563eb" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="477" y="295" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="800" fill="#ffffff" text-anchor="middle">B201</text>
+  <text x="477" y="315" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">Selected ✓</text>
+
+  <!-- B202 - B204 (Available) -->
+  <rect x="525" y="260" width="75" height="75" rx="8" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/>
+  <text x="562" y="295" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="800" fill="#0f172a" text-anchor="middle">B202</text>
+  <text x="562" y="315" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#10b981" text-anchor="middle">Available</text>
+
+  <rect x="610" y="260" width="75" height="75" rx="8" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/>
+  <text x="647" y="295" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="800" fill="#0f172a" text-anchor="middle">B203</text>
+  <text x="647" y="315" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#10b981" text-anchor="middle">Available</text>
+
+  <rect x="690" y="260" width="70" height="75" rx="8" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/>
+  <text x="725" y="295" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="800" fill="#0f172a" text-anchor="middle">B204</text>
+  <text x="725" y="315" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#10b981" text-anchor="middle">Available</text>
+
+  <!-- Zone C: Tech & Media Lab -->
+  <rect x="60" y="465" width="345" height="225" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="6,4"/>
+  <rect x="75" y="475" width="60" height="20" rx="10" fill="#e0f2fe"/>
+  <text x="105" y="489" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="800" fill="#0369a1" text-anchor="middle">Zone C</text>
+  <text x="145" y="490" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="800" fill="#0f172a">Tech &amp; Media Lab (4K Dual Monitors)</text>
+
+  <rect x="75" y="510" width="75" height="75" rx="8" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/>
+  <text x="112" y="545" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="800" fill="#0f172a" text-anchor="middle">C301</text>
+  <text x="112" y="565" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#10b981" text-anchor="middle">Available</text>
+
+  <rect x="160" y="510" width="75" height="75" rx="8" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/>
+  <text x="197" y="545" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="800" fill="#0f172a" text-anchor="middle">C302</text>
+  <text x="197" y="565" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#10b981" text-anchor="middle">Available</text>
+
+  <rect x="245" y="510" width="75" height="75" rx="8" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/>
+  <text x="282" y="545" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="800" fill="#0f172a" text-anchor="middle">C303</text>
+  <text x="282" y="565" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#10b981" text-anchor="middle">Available</text>
+
+  <rect x="330" y="510" width="65" height="75" rx="8" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/>
+  <text x="362" y="545" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="800" fill="#0f172a" text-anchor="middle">C304</text>
+  <text x="362" y="565" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#10b981" text-anchor="middle">Available</text>
+
+  <!-- Zone D: Faculty & Research Suites -->
+  <rect x="425" y="465" width="345" height="225" rx="12" fill="#faf5ff" stroke="#d8b4fe" stroke-dasharray="6,4"/>
+  <rect x="440" y="475" width="60" height="20" rx="10" fill="#ede9fe"/>
+  <text x="470" y="489" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="800" fill="#6d28d9" text-anchor="middle">Zone D</text>
+  <text x="510" y="490" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="800" fill="#0f172a">Faculty &amp; Research Suites</text>
+
+  <rect x="440" y="510" width="75" height="75" rx="8" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/>
+  <text x="477" y="545" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="800" fill="#0f172a" text-anchor="middle">D401</text>
+  <text x="477" y="565" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#10b981" text-anchor="middle">Available</text>
+
+  <rect x="525" y="510" width="75" height="75" rx="8" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/>
+  <text x="562" y="545" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="800" fill="#0f172a" text-anchor="middle">D402</text>
+  <text x="562" y="565" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#10b981" text-anchor="middle">Available</text>
+
+  <rect x="610" y="510" width="75" height="75" rx="8" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/>
+  <text x="647" y="545" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="800" fill="#0f172a" text-anchor="middle">D403</text>
+  <text x="647" y="565" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#10b981" text-anchor="middle">Available</text>
+
+  <rect x="690" y="510" width="70" height="75" rx="8" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/>
+  <text x="725" y="545" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="800" fill="#0f172a" text-anchor="middle">D404</text>
+  <text x="725" y="565" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#10b981" text-anchor="middle">Available</text>
+
+  <!-- Right Column: Booking Confirmation Form & Digital Pass Card -->
+  <rect x="815" y="130" width="345" height="580" rx="16" fill="#ffffff" stroke="#e2e8f0" filter="url(#deskShadow)"/>
+
+  <text x="840" y="170" font-family="'Segoe UI', Roboto, sans-serif" font-size="18" font-weight="800" fill="#0f172a">Confirm Reservation</text>
+
+  <!-- Selection Notice Banner -->
+  <rect x="840" y="190" width="295" height="50" rx="8" fill="#dbeafe"/>
+  <text x="855" y="212" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="800" fill="#1e40af">Selected: Desk B201</text>
+  <text x="855" y="228" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" fill="#3b82f6">Collaborative Zone (Mesh Wi-Fi)</text>
+
+  <text x="840" y="270" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" fill="#475569">Study Purpose:</text>
+  <rect x="840" y="280" width="295" height="38" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="855" y="304" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" fill="#0f172a">Academic Group Study</text>
+
+  <!-- Collision Engine Verification Card -->
+  <rect x="840" y="335" width="295" height="110" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="855" y="360" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" fill="#64748b">Borrower: <tspan font-weight="700" fill="#0f172a">Alex Turner</tspan></text>
+  <text x="855" y="385" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" fill="#64748b">Role: <tspan font-weight="700" fill="#2563eb">Student</tspan></text>
+  <text x="855" y="410" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" fill="#64748b">Time Window: <tspan font-weight="700" fill="#0f172a">09:00 - 11:00</tspan></text>
+  <text x="855" y="432" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#15803d">✓ Double-booking Protected (Zero Overlap)</text>
+
+  <rect x="840" y="465" width="295" height="46" rx="8" fill="#2563eb"/>
+  <text x="987" y="493" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">Confirm &amp; Generate Digital Pass</text>
+
+  <!-- Digital Pass Preview -->
+  <rect x="840" y="530" width="295" height="155" rx="12" fill="#0f172a"/>
+  <text x="860" y="560" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" fill="#93c5fd">SMART CAMPUS PASS</text>
+  <text x="860" y="590" font-family="'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="900" fill="#ffffff">DESK B201</text>
+  <text x="860" y="615" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" fill="#cbd5e1">Holder: Alex Turner (STU-8841)</text>
+  <text x="860" y="635" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" fill="#94a3b8">Valid: Today 09:00 - 11:00 AM</text>
+  <rect x="1060" y="555" width="60" height="60" rx="6" fill="#ffffff"/>
+  <text x="1090" y="590" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="900" fill="#0f172a" text-anchor="middle">QR CODE</text>
+</svg>

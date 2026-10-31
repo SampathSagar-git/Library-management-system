@@ -1,0 +1,675 @@
+{% extends 'base.html' %}
+{% block title %}Admin Control Panel - Smart Library{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-5 py-4">
+  <!-- Top Admin Header -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+      <div class="d-inline-flex align-items-center gap-2 bg-dark text-white px-3 py-1 rounded-pill small mb-2">
+        <i class="fa-solid fa-shield-halved text-warning"></i> Administrator Control Panel
+      </div>
+      <h2 class="fw-bold mb-1">Library Management &amp; Analytics Center</h2>
+      <p class="text-muted small mb-0">System health, inventory oversight, user privileges, circulation &amp; Neo4j graph intelligence.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-primary-smart" data-bs-toggle="modal" data-bs-target="#modalAddBook">
+        <i class="fa-solid fa-plus me-1"></i> Add New Book
+      </button>
+      <button class="btn btn-outline-smart" data-bs-toggle="modal" data-bs-target="#modalAddCategory">
+        <i class="fa-solid fa-tag me-1"></i> Add Category
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI Statistics Row (Section 10 Requirements) -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="card-stat bg-white h-100">
+        <div class="text-muted small fw-semibold text-uppercase">Total Titles</div>
+        <div class="stat-number fs-2 text-dark">{{ stats.total_books }}</div>
+        <div class="small text-muted">{{ stats.total_copies }} total physical copies</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="card-stat bg-white h-100">
+        <div class="text-muted small fw-semibold text-uppercase">Available Copies</div>
+        <div class="stat-number fs-2 text-success">{{ stats.available_copies }}</div>
+        <div class="small text-muted">{{ stats.borrowed_copies }} copies on loan</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="card-stat bg-white h-100">
+        <div class="text-muted small fw-semibold text-uppercase">Students &amp; Staff</div>
+        <div class="stat-number fs-2 text-primary">{{ stats.total_users }}</div>
+        <div class="small text-muted">{{ stats.registered_students }} stu &bull; {{ stats.registered_staff }} staff</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="card-stat bg-white h-100">
+        <div class="text-muted small fw-semibold text-uppercase">Available Desks</div>
+        <div class="stat-number fs-2 text-info">{{ stats.available_desks }}</div>
+        <div class="small text-muted">Of {{ stats.total_desks }} total campus desks</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="card-stat bg-white h-100">
+        <div class="text-muted small fw-semibold text-uppercase">Pending Loans</div>
+        <div class="stat-number fs-2 text-warning">{{ stats.pending_loan_requests }}</div>
+        <div class="small text-muted">{{ stats.active_reservations }} active reservations</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="card-stat bg-white h-100">
+        <div class="text-muted small fw-semibold text-uppercase">Overdue Fines</div>
+        <div class="stat-number fs-2 text-danger">${{ "%.2f"|format(stats.total_unpaid_fines) }}</div>
+        <div class="small text-muted">{{ stats.overdue_loans_count }} overdue books</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Graphical Reports Section (Chart.js) -->
+  <div class="row g-4 mb-4">
+    <div class="col-xl-6">
+      <div class="card-smart p-4 bg-white h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold mb-0 text-dark">
+            <i class="fa-solid fa-chart-line text-primary me-2"></i>Borrowing &amp; Return Trends (Last 7 Days)
+          </h5>
+          <span class="badge bg-light text-muted border">Live Volume</span>
+        </div>
+        <div style="height: 250px;">
+          <canvas id="chartLoanTrends"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="card-smart p-4 bg-white h-100">
+        <h5 class="fw-bold mb-3 text-dark">
+          <i class="fa-solid fa-chart-pie text-purple me-2" style="color: var(--soft-purple);"></i>Books by Category
+        </h5>
+        <div style="height: 250px; position: relative;">
+          <canvas id="chartCategories"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="card-smart p-4 bg-white h-100">
+        <h5 class="fw-bold mb-3 text-dark">
+          <i class="fa-solid fa-chart-column text-success me-2"></i>Today's Desk Occupancy
+        </h5>
+        <div style="height: 250px;">
+          <canvas id="chartDeskOccupancy"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Management Tabs Navigation -->
+  <ul class="nav nav-pills mb-4 gap-2" id="adminTabs" role="tablist">
+    <li class="nav-item">
+      <button class="nav-link active rounded-pill px-4" id="loans-tab" data-bs-toggle="pill" data-bs-target="#tab-loans" type="button">
+        <i class="fa-solid fa-hand-holding-hand me-1"></i> Loan Requests ({{ pending_loans|length }})
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link rounded-pill px-4" id="books-tab" data-bs-toggle="pill" data-bs-target="#tab-books" type="button">
+        <i class="fa-solid fa-book me-1"></i> Books Catalog ({{ books|length }})
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link rounded-pill px-4" id="reservations-tab" data-bs-toggle="pill" data-bs-target="#tab-reservations" type="button">
+        <i class="fa-solid fa-bookmark me-1"></i> Reservations ({{ pending_reservations|length }})
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link rounded-pill px-4" id="users-tab" data-bs-toggle="pill" data-bs-target="#tab-users" type="button">
+        <i class="fa-solid fa-users me-1"></i> Users &amp; Permissions ({{ users|length }})
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link rounded-pill px-4" id="fines-tab" data-bs-toggle="pill" data-bs-target="#tab-fines" type="button">
+        <i class="fa-solid fa-receipt me-1"></i> Overdue &amp; Fines ({{ fines|length }})
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link rounded-pill px-4" id="activity-tab" data-bs-toggle="pill" data-bs-target="#tab-activity" type="button">
+        <i class="fa-solid fa-clock-rotate-left me-1"></i> Real-time Logs
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link rounded-pill px-4" id="neo4j-tab" data-bs-toggle="pill" data-bs-target="#tab-neo4j" type="button">
+        <i class="fa-solid fa-diagram-project me-1"></i> Neo4j Knowledge Graph
+      </button>
+    </li>
+  </ul>
+
+  <!-- Tab Content Panels -->
+  <div class="tab-content" id="adminTabsContent">
+    
+    <!-- Tab 1: Loan Requests & Active Circulation -->
+    <div class="tab-pane fade show active" id="tab-loans" role="tabpanel">
+      <!-- Pending Requests -->
+      <div class="card-smart bg-white overflow-hidden mb-4">
+        <div class="p-3 border-bottom bg-warning-subtle text-warning-emphasis fw-bold d-flex justify-content-between align-items-center">
+          <span><i class="fa-solid fa-clock me-2"></i>Pending Loan Approvals ({{ pending_loans|length }})</span>
+          <span class="small fw-normal">Requires librarian check-out</span>
+        </div>
+        {% if pending_loans %}
+        <div class="table-responsive">
+          <table class="table table-custom mb-0">
+            <thead>
+              <tr>
+                <th>Book Title</th>
+                <th>Borrower</th>
+                <th>Role</th>
+                <th>Requested Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for l in pending_loans %}
+              <tr>
+                <td>
+                  <div class="fw-bold">{{ l.book_title }}</div>
+                  <div class="text-muted small">ISBN: {{ l.book_isbn }}</div>
+                </td>
+                <td>
+                  <div class="fw-semibold">{{ l.user_name }}</div>
+                  <div class="text-muted small">{{ l.user_email }}</div>
+                </td>
+                <td><span class="badge bg-light text-dark border text-capitalize">{{ l.user_role }}</span></td>
+                <td>{{ l.issue_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>
+                  <div class="d-flex gap-2">
+                    <form action="{{ url_for('loans.approve_loan', loan_id=l.id) }}" method="POST">
+                      <button type="submit" class="btn btn-sm btn-success">
+                        <i class="fa-solid fa-check me-1"></i> Approve
+                      </button>
+                    </form>
+                    <form action="{{ url_for('loans.reject_loan', loan_id=l.id) }}" method="POST">
+                      <button type="submit" class="btn btn-sm btn-outline-danger">
+                        Decline
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="text-center py-4 text-muted small">No pending loan requests awaiting approval.</div>
+        {% endif %}
+      </div>
+
+      <!-- Active Circulation Loans -->
+      <div class="card-smart bg-white overflow-hidden">
+        <div class="p-3 border-bottom fw-bold d-flex justify-content-between align-items-center">
+          <span><i class="fa-solid fa-book-reader me-2 text-primary"></i>Active Loans on Campus ({{ active_loans|length }})</span>
+        </div>
+        {% if active_loans %}
+        <div class="table-responsive">
+          <table class="table table-custom mb-0">
+            <thead>
+              <tr>
+                <th>Book</th>
+                <th>Borrower</th>
+                <th>Issue Date</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for l in active_loans %}
+              <tr>
+                <td><strong>{{ l.book_title }}</strong></td>
+                <td>{{ l.user_name }} <span class="text-muted small">({{ l.user_email }})</span></td>
+                <td>{{ l.issue_date.strftime('%Y-%m-%d') }}</td>
+                <td>
+                  <span class="{% if l.is_overdue %}text-danger fw-bold{% endif %}">
+                    {{ l.due_date.strftime('%Y-%m-%d') }}
+                  </span>
+                </td>
+                <td>
+                  {% if l.is_overdue %}
+                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle">Overdue ({{ l.overdue_days }}d)</span>
+                  {% else %}
+                    <span class="badge bg-success-subtle text-success">Active</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <form action="{{ url_for('loans.process_return', loan_id=l.id) }}" method="POST" onsubmit="return confirm('Check-in return for this book?');">
+                    <button type="submit" class="btn btn-sm btn-primary-smart">
+                      <i class="fa-solid fa-inbox me-1"></i> Check In Return
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="text-center py-4 text-muted small">No active loans on campus.</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Tab 2: Books Catalog Management -->
+    <div class="tab-pane fade" id="tab-books" role="tabpanel">
+      <div class="card-smart bg-white overflow-hidden">
+        <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+          <span class="fw-bold"><i class="fa-solid fa-books me-2 text-primary"></i>Manage Inventory</span>
+          <button class="btn btn-sm btn-primary-smart" data-bs-toggle="modal" data-bs-target="#modalAddBook">
+            <i class="fa-solid fa-plus me-1"></i> Add New Book
+          </button>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-custom mb-0">
+            <thead>
+              <tr>
+                <th>Title &amp; Author</th>
+                <th>ISBN</th>
+                <th>Category</th>
+                <th>Total Qty</th>
+                <th>Available</th>
+                <th>Location</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for b in books %}
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <img src="{{ b.cover_image }}" alt="" class="rounded-2 shadow-sm" style="width: 32px; height: 44px; object-fit: cover;">
+                    <div>
+                      <div class="fw-bold">{{ b.title }}</div>
+                      <div class="text-muted small">{{ b.author }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td><code>{{ b.isbn }}</code></td>
+                <td><span class="badge bg-light text-primary border">{{ b.category }}</span></td>
+                <td>{{ b.quantity }}</td>
+                <td>
+                  <span class="badge {% if b.available_copies > 0 %}bg-success-subtle text-success{% else %}bg-danger-subtle text-danger{% endif %}">
+                    {{ b.available_copies }} Avail
+                  </span>
+                </td>
+                <td><small class="text-muted">{{ b.location }}</small></td>
+                <td>
+                  <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalEditBook{{ b.id }}">
+                      <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <form action="{{ url_for('books.delete_book', book_id=b.id) }}" method="POST" onsubmit="return confirm('Permanently remove this book?');">
+                      <button type="submit" class="btn btn-sm btn-outline-danger">
+                        <i class="fa-solid fa-trash-can"></i>
+                      </button>
+                    </form>
+                  </div>
+
+                  <!-- Edit Book Modal -->
+                  <div class="modal fade" id="modalEditBook{{ b.id }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                      <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                        <div class="modal-header border-0 pb-0">
+                          <h5 class="fw-bold">Edit Book: {{ b.title }}</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <form action="{{ url_for('books.edit_book', book_id=b.id) }}" method="POST">
+                          <div class="modal-body p-4">
+                            <div class="row g-3 mb-3">
+                              <div class="col-md-8">
+                                <label class="form-label small fw-semibold">Title</label>
+                                <input type="text" name="title" class="form-control form-control-smart" value="{{ b.title }}" required>
+                              </div>
+                              <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Category</label>
+                                <select name="category" class="form-select form-select-smart">
+                                  {% for cat in categories %}
+                                  <option value="{{ cat.name }}" {% if b.category == cat.name %}selected{% endif %}>{{ cat.name }}</option>
+                                  {% endfor %}
+                                </select>
+                              </div>
+                            </div>
+                            <div class="row g-3 mb-3">
+                              <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Author</label>
+                                <input type="text" name="author" class="form-control form-control-smart" value="{{ b.author }}" required>
+                              </div>
+                              <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Total Quantity</label>
+                                <input type="number" name="quantity" class="form-control form-control-smart" value="{{ b.quantity }}" min="1" required>
+                              </div>
+                            </div>
+                            <div class="row g-3 mb-3">
+                              <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Publisher</label>
+                                <input type="text" name="publisher" class="form-control form-control-smart" value="{{ b.publisher }}">
+                              </div>
+                              <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Location</label>
+                                <input type="text" name="location" class="form-control form-control-smart" value="{{ b.location }}">
+                              </div>
+                            </div>
+                            <div class="mb-3">
+                              <label class="form-label small fw-semibold">Cover Image URL</label>
+                              <input type="url" name="cover_image" class="form-control form-control-smart" value="{{ b.cover_image }}">
+                            </div>
+                            <div class="mb-3">
+                              <label class="form-label small fw-semibold">Description</label>
+                              <textarea name="description" class="form-control form-control-smart" rows="3">{{ b.description }}</textarea>
+                            </div>
+                          </div>
+                          <div class="modal-footer border-0 pt-0">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary-smart">Update Book &amp; Neo4j</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Book Reservations Management -->
+    <div class="tab-pane fade" id="tab-reservations" role="tabpanel">
+      <div class="card-smart bg-white overflow-hidden">
+        <div class="p-3 border-bottom fw-bold">
+          <i class="fa-solid fa-bookmark me-2 text-primary"></i>All Reservations
+        </div>
+        {% if all_reservations %}
+        <div class="table-responsive">
+          <table class="table table-custom mb-0">
+            <thead>
+              <tr>
+                <th>Book Title</th>
+                <th>Student / Staff</th>
+                <th>Reservation Date</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in all_reservations %}
+              <tr>
+                <td><strong>{{ r.book_title }}</strong></td>
+                <td>{{ r.user_name }} <span class="text-muted small">({{ r.user_email }})</span></td>
+                <td>{{ r.reservation_date.strftime('%Y-%m-%d %H:%M') if r.reservation_date else 'N/A' }}</td>
+                <td>
+                  <span class="badge {% if r.status == 'approved' %}bg-success{% elif r.status == 'pending' %}bg-warning text-dark{% elif r.status == 'fulfilled' %}bg-info{% else %}bg-secondary{% endif %}">
+                    {{ r.status.capitalize() }}
+                  </span>
+                </td>
+                <td>
+                  {% if r.status == 'pending' %}
+                  <div class="d-flex gap-2">
+                    <form action="{{ url_for('booking.approve_reservation', reservation_id=r.id) }}" method="POST">
+                      <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                    </form>
+                    <form action="{{ url_for('booking.reject_reservation', reservation_id=r.id) }}" method="POST">
+                      <button type="submit" class="btn btn-sm btn-outline-danger">Reject</button>
+                    </form>
+                  </div>
+                  {% else %}
+                  <span class="text-muted small">&mdash;</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="text-center py-4 text-muted small">No book reservations placed.</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Tab 4: Users & Permissions -->
+    <div class="tab-pane fade" id="tab-users" role="tabpanel">
+      <div class="card-smart bg-white overflow-hidden">
+        <div class="p-3 border-bottom fw-bold d-flex justify-content-between align-items-center">
+          <span><i class="fa-solid fa-users-gear me-2 text-primary"></i>Registered Users Directory</span>
+          <span class="badge bg-light text-dark border">{{ users|length }} Total</span>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-custom mb-0">
+            <thead>
+              <tr>
+                <th>Name &amp; Email</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Campus ID</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for u in users %}
+              <tr>
+                <td>
+                  <div class="fw-bold">{{ u.name }}</div>
+                  <div class="text-muted small">{{ u.email }}</div>
+                </td>
+                <td>
+                  <span class="badge {% if u.role == 'admin' %}bg-dark{% elif u.role == 'staff' %}bg-info text-white{% else %}bg-primary{% endif %} text-capitalize">
+                    {{ u.role }}
+                  </span>
+                </td>
+                <td>{{ u.department }}</td>
+                <td><code>{{ u.student_id or u.staff_id or 'ADM' }}</code></td>
+                <td>
+                  {% if u.status == 'active' %}
+                    <span class="badge bg-success-subtle text-success">Active</span>
+                  {% else %}
+                    <span class="badge bg-danger-subtle text-danger">Suspended</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <div class="d-flex gap-2">
+                    <form action="{{ url_for('admin.toggle_user_status', user_id=u.id) }}" method="POST">
+                      <button type="submit" class="btn btn-sm {% if u.status == 'active' %}btn-outline-warning{% else %}btn-outline-success{% endif %}">
+                        {% if u.status == 'active' %}Suspend{% else %}Activate{% endif %}
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 5: Overdue Fines Management -->
+    <div class="tab-pane fade" id="tab-fines" role="tabpanel">
+      <div class="card-smart bg-white overflow-hidden">
+        <div class="p-3 border-bottom fw-bold d-flex justify-content-between align-items-center">
+          <span><i class="fa-solid fa-receipt me-2 text-danger"></i>Unpaid Overdue Fines</span>
+          <span class="badge bg-danger text-white">${{ "%.2f"|format(stats.total_unpaid_fines) }} Pending</span>
+        </div>
+        {% if fines %}
+        <div class="table-responsive">
+          <table class="table table-custom mb-0">
+            <thead>
+              <tr>
+                <th>Borrower</th>
+                <th>Book Title</th>
+                <th>Fine Reason</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for f in fines %}
+              <tr>
+                <td><strong>{{ f.user_name }}</strong></td>
+                <td>{{ f.book_title }}</td>
+                <td><small class="text-muted">{{ f.reason }}</small></td>
+                <td><strong class="text-danger">${{ "%.2f"|format(f.amount) }}</strong></td>
+                <td><span class="badge bg-danger-subtle text-danger">Unpaid</span></td>
+                <td>
+                  <div class="d-flex gap-2">
+                    <form action="{{ url_for('admin.mark_fine_paid', fine_id=f._id) }}" method="POST">
+                      <button type="submit" class="btn btn-sm btn-success">
+                        <i class="fa-solid fa-check me-1"></i> Mark Paid
+                      </button>
+                    </form>
+                    <form action="{{ url_for('admin.waive_fine', fine_id=f._id) }}" method="POST">
+                      <button type="submit" class="btn btn-sm btn-outline-secondary">
+                        Waive
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="text-center py-4 text-muted small">No unpaid fines currently outstanding.</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Tab 6: Real-time Activity Logs -->
+    <div class="tab-pane fade" id="tab-activity" role="tabpanel">
+      <div class="card-smart bg-white overflow-hidden">
+        <div class="p-3 border-bottom fw-bold">
+          <i class="fa-solid fa-list me-2 text-primary"></i>Audit Trail &amp; System Events
+        </div>
+        <div class="table-responsive">
+          <table class="table table-custom mb-0">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Actor</th>
+                <th>Event Action</th>
+                <th>Details</th>
+                <th>IP Address</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for log in activity_logs %}
+              <tr>
+                <td class="text-muted small">{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') if log.timestamp else 'N/A' }}</td>
+                <td><strong>{{ log.user_name }}</strong></td>
+                <td><span class="badge bg-light text-primary border">{{ log.action }}</span></td>
+                <td class="small">{{ log.details }}</td>
+                <td><code>{{ log.ip_address }}</code></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 7: Neo4j Knowledge Graph Visualizer -->
+    <div class="tab-pane fade" id="tab-neo4j" role="tabpanel">
+      <div class="card-smart p-4 bg-white">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h5 class="fw-bold mb-1 text-dark">
+              <i class="fa-solid fa-diagram-project text-purple me-2" style="color: var(--soft-purple);"></i>
+              Neo4j Graph Database Topology
+            </h5>
+            <span class="text-muted small">Connected academic network: Students, Staff, Books, Authors, Categories &amp; Desks</span>
+          </div>
+          <span class="badge {% if is_neo4j_live %}bg-success{% else %}bg-primary{% endif %} px-3 py-2">
+            Status: {% if is_neo4j_live %}Live Neo4j Daemon{% else %}Embedded Graph Engine{% endif %}
+          </span>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-md-3">
+            <div class="p-3 bg-light rounded-3 text-center border">
+              <div class="text-muted small">Total Graph Nodes</div>
+              <div class="display-6 fw-bold text-dark">{{ graph_stats.total_nodes }}</div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="p-3 bg-light rounded-3 text-center border">
+              <div class="text-muted small">Total Relationships</div>
+              <div class="display-6 fw-bold text-primary">{{ graph_stats.total_relationships }}</div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="p-3 bg-light rounded-3 text-center border">
+              <div class="text-muted small">Recommendation Queries</div>
+              <div class="display-6 fw-bold text-success">Active</div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="p-3 bg-light rounded-3 text-center border">
+              <div class="text-muted small">Graph Traversal Types</div>
+              <div class="display-6 fw-bold text-purple" style="color: var(--soft-purple);">6 Types</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Relationship Types Legend -->
+        <h6 class="fw-bold mb-2">Graph Relationships Mapped:</h6>
+        <div class="d-flex flex-wrap gap-2 mb-4">
+          <span class="badge bg-primary-subtle text-primary border px-3 py-2"><code>(Student)-[:BORROWED]-&gt;(Book)</code></span>
+          <span class="badge bg-primary-subtle text-primary border px-3 py-2"><code>(Student)-[:RESERVED]-&gt;(Book)</code></span>
+          <span class="badge bg-info-subtle text-info border px-3 py-2"><code>(Staff)-[:BORROWED]-&gt;(Book)</code></span>
+          <span class="badge bg-success-subtle text-success border px-3 py-2"><code>(User)-[:BOOKED]-&gt;(Desk)</code></span>
+          <span class="badge bg-purple-subtle text-primary border px-3 py-2" style="background: var(--purple-subtle); color: var(--soft-purple);"><code>(Book)-[:WRITTEN_BY]-&gt;(Author)</code></span>
+          <span class="badge bg-warning-subtle text-warning border px-3 py-2"><code>(Book)-[:BELONGS_TO]-&gt;(Category)</code></span>
+          <span class="badge bg-danger-subtle text-danger border px-3 py-2"><code>(Student)-[:INTERESTED_IN]-&gt;(Category)</code></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Add Category -->
+<div class="modal fade" id="modalAddCategory" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="fw-bold"><i class="fa-solid fa-tag text-primary me-2"></i>Add Academic Category</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form action="{{ url_for('admin.add_category') }}" method="POST">
+        <div class="modal-body p-4">
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Category Name *</label>
+            <input type="text" name="name" class="form-control form-control-smart" placeholder="e.g. Cybersecurity &amp; Cryptography" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Description</label>
+            <textarea name="description" class="form-control form-control-smart" rows="2" placeholder="Field overview"></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Brand Color Code</label>
+            <input type="color" name="color_code" class="form-control form-control-color" value="#2563eb">
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary-smart">Save Category</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,305 @@
+{% extends 'base.html' %}
+{% block title %}Smart Library - Your Smart Library, One Click Away{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-7">
+        <div class="d-inline-flex align-items-center gap-2 bg-primary-subtle text-primary fw-semibold px-3 py-1 rounded-pill small mb-3">
+          <i class="fa-solid fa-sparkles"></i> Next-Gen Campus Library Platform
+        </div>
+        <h1 class="hero-title">
+          Your Smart Library, <br><span class="gradient-text">One Click Away.</span>
+        </h1>
+        <p class="lead text-muted mb-4 fs-5" style="max-width: 580px;">
+          Seamlessly borrow physical and digital books, reserve study pods in real-time, track loan due dates, and discover literature tailored to your research using knowledge graph AI.
+        </p>
+
+        <!-- Search Bar -->
+        <form action="{{ url_for('books.catalog') }}" method="GET" class="hero-search-box mb-4" style="max-width: 620px;">
+          <i class="fa-solid fa-magnifying-glass text-muted fs-5 me-2"></i>
+          <input type="text" name="q" class="hero-search-input" placeholder="Search by title, author, ISBN, or topic..." required>
+          <button type="submit" class="btn btn-primary-smart rounded-pill px-4 py-2">
+            Search
+          </button>
+        </form>
+
+        <!-- Action Buttons -->
+        <div class="d-flex flex-wrap gap-3 align-items-center">
+          {% if not current_user.is_authenticated %}
+            <a href="{{ url_for('auth.login') }}" class="btn btn-primary-smart px-4 py-3">
+              <i class="fa-solid fa-graduation-cap me-1"></i> Student &amp; Staff Login
+            </a>
+            <a href="{{ url_for('booking.desk_booking_view') }}" class="btn btn-outline-smart px-4 py-3">
+              <i class="fa-solid fa-chair me-1"></i> Explore Desk Booking
+            </a>
+          {% else %}
+            {% if current_user.is_admin %}
+              <a href="{{ url_for('admin.dashboard') }}" class="btn btn-primary-smart px-4 py-3">
+                <i class="fa-solid fa-gauge-high me-1"></i> Open Admin Dashboard
+              </a>
+            {% elif current_user.is_staff %}
+              <a href="{{ url_for('staff.dashboard') }}" class="btn btn-primary-smart px-4 py-3">
+                <i class="fa-solid fa-chalkboard-user me-1"></i> Faculty Dashboard
+              </a>
+            {% else %}
+              <a href="{{ url_for('student.dashboard') }}" class="btn btn-primary-smart px-4 py-3">
+                <i class="fa-solid fa-user-graduate me-1"></i> Student Dashboard
+              </a>
+            {% endif %}
+            <a href="{{ url_for('books.catalog') }}" class="btn btn-outline-smart px-4 py-3">
+              <i class="fa-solid fa-book-open me-1"></i> Browse Catalog
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Hero Visual Card / Quick Teaser -->
+      <div class="col-lg-5">
+        <div class="position-relative">
+          <div class="card-smart p-4 shadow-lg border-0 bg-white" style="border-radius: 24px;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div class="fw-bold text-dark fs-5">
+                <i class="fa-solid fa-bolt text-warning me-2"></i>Live Desk Occupancy
+              </div>
+              <span class="badge bg-success-subtle text-success px-3 py-1 rounded-pill">
+                <i class="fa-solid fa-circle text-success me-1" style="font-size: 0.5rem;"></i> Active System
+              </span>
+            </div>
+
+            <!-- Mini Visual Layout Preview -->
+            <div class="bg-light p-3 rounded-4 mb-3 border">
+              <div class="d-flex justify-content-between text-muted small mb-2 fw-medium">
+                <span>Quiet Study Pods</span>
+                <span class="text-success">Available Now</span>
+              </div>
+              <div class="d-flex gap-2">
+                <div class="p-2 bg-success text-white rounded-3 text-center flex-fill small fw-bold">A101</div>
+                <div class="p-2 bg-success text-white rounded-3 text-center flex-fill small fw-bold">A102</div>
+                <div class="p-2 bg-warning text-white rounded-3 text-center flex-fill small fw-bold">A103</div>
+                <div class="p-2 bg-success text-white rounded-3 text-center flex-fill small fw-bold">A104</div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <div>
+                <div class="text-muted small">Collaborative Zone</div>
+                <div class="fw-bold text-dark">4 Seater Workstations</div>
+              </div>
+              <a href="{{ url_for('booking.desk_booking_view') }}" class="btn btn-sm btn-outline-smart rounded-pill">
+                Reserve Seat &rarr;
+              </a>
+            </div>
+
+            <hr class="my-3 text-muted opacity-25">
+
+            <!-- Neo4j Graph Feature Callout -->
+            <div class="d-flex align-items-center gap-3">
+              <div class="rounded-3 bg-purple-subtle text-primary p-2" style="background-color: var(--purple-subtle);">
+                <i class="fa-solid fa-diagram-project fs-4 text-purple" style="color: var(--soft-purple);"></i>
+              </div>
+              <div>
+                <div class="fw-bold small text-dark">Graph AI Recommendations</div>
+                <div class="text-muted" style="font-size: 0.8rem;">Powered by collaborative Neo4j borrowing graph</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Library Statistics Section -->
+<section class="py-5 bg-white border-bottom">
+  <div class="container">
+    <div class="row g-4 text-center">
+      <div class="col-6 col-md-3">
+        <div class="card-stat h-100">
+          <div class="icon-box bg-primary-subtle text-primary mx-auto mb-3">
+            <i class="fa-solid fa-book"></i>
+          </div>
+          <div class="stat-number display-6 text-dark">{{ stats.total_books }}</div>
+          <div class="text-muted fw-medium small">Academic Titles</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card-stat h-100">
+          <div class="icon-box bg-success-subtle text-success mx-auto mb-3">
+            <i class="fa-solid fa-book-bookmark"></i>
+          </div>
+          <div class="stat-number display-6 text-dark">{{ stats.available_books }}</div>
+          <div class="text-muted fw-medium small">Copies Available</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card-stat h-100">
+          <div class="icon-box bg-info-subtle text-info mx-auto mb-3">
+            <i class="fa-solid fa-user-graduate"></i>
+          </div>
+          <div class="stat-number display-6 text-dark">{{ stats.total_students }}</div>
+          <div class="text-muted fw-medium small">Active Students</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card-stat h-100">
+          <div class="icon-box bg-warning-subtle text-warning mx-auto mb-3">
+            <i class="fa-solid fa-chair"></i>
+          </div>
+          <div class="stat-number display-6 text-dark">{{ stats.total_desks }}</div>
+          <div class="text-muted fw-medium small">Study Desks &amp; Pods</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Books Section -->
+<section class="py-5" style="background-color: var(--bg-main);">
+  <div class="container">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4">
+      <div>
+        <span class="text-primary fw-bold text-uppercase small tracking-wide">Campus Recommendations</span>
+        <h2 class="fw-bold mb-1">Featured Academic Resources</h2>
+        <p class="text-muted mb-0">High-demand literature curated across key disciplines.</p>
+      </div>
+      <div class="mt-3 mt-md-0">
+        <a href="{{ url_for('books.catalog') }}" class="btn btn-outline-smart">
+          View Complete Catalog <i class="fa-solid fa-arrow-right ms-1"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      {% for book in featured_books %}
+      <div class="col-xl-4 col-md-6">
+        <div class="card-smart book-card">
+          <div class="cover-container">
+            <img src="{{ book.cover_image }}" alt="{{ book.title }}" class="cover-img">
+            {% if book.is_available %}
+              <span class="book-badge-avail"><i class="fa-solid fa-circle-check me-1"></i> {{ book.available_copies }} Available</span>
+            {% else %}
+              <span class="book-badge-unavail"><i class="fa-solid fa-clock me-1"></i> Reserved</span>
+            {% endif %}
+          </div>
+          <div class="p-4 d-flex flex-column flex-grow-1">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="badge bg-light text-primary border small">{{ book.category }}</span>
+              <span class="text-muted small"><i class="fa-solid fa-location-dot me-1"></i>{{ book.location.split('-')[0] }}</span>
+            </div>
+            <h5 class="fw-bold mb-1 text-truncate" title="{{ book.title }}">{{ book.title }}</h5>
+            <p class="text-muted small mb-3">By {{ book.author }}</p>
+            <p class="text-secondary small mb-4 flex-grow-1" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+              {{ book.description }}
+            </p>
+
+            <div class="d-flex gap-2 pt-2 border-top">
+              <button type="button" class="btn btn-light btn-sm flex-fill fw-semibold border" data-bs-toggle="modal" data-bs-target="#bookDetailModal" data-book-id="{{ book.id }}">
+                <i class="fa-regular fa-eye me-1"></i> Details
+              </button>
+              {% if current_user.is_authenticated %}
+                {% if book.is_available %}
+                <form action="{{ url_for('loans.request_loan', book_id=book.id) }}" method="POST" class="flex-fill">
+                  <button type="submit" class="btn btn-primary-smart btn-sm w-100 justify-content-center">
+                    <i class="fa-solid fa-book-reader me-1"></i> Borrow
+                  </button>
+                </form>
+                {% else %}
+                <form action="{{ url_for('booking.reserve_book', book_id=book.id) }}" method="POST" class="flex-fill">
+                  <button type="submit" class="btn btn-outline-smart btn-sm w-100 justify-content-center">
+                    <i class="fa-solid fa-bookmark me-1"></i> Reserve
+                  </button>
+                </form>
+                {% endif %}
+              {% else %}
+                <a href="{{ url_for('auth.login') }}" class="btn btn-outline-smart btn-sm flex-fill text-center">
+                  Log in to Borrow
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Smart Library Services Section -->
+<section class="py-5 bg-white border-top border-bottom">
+  <div class="container py-3">
+    <div class="text-center mb-5" style="max-width: 650px; margin: 0 auto;">
+      <span class="text-primary fw-bold text-uppercase small tracking-wide">End-to-End Capabilities</span>
+      <h2 class="fw-bold">Designed for Students, Faculty &amp; Staff</h2>
+      <p class="text-muted">A modern digital ecosystem connecting library inventory, physical seating, and knowledge management.</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="card-smart p-4 h-100 border-0 bg-light">
+          <div class="brand-icon mb-3">
+            <i class="fa-solid fa-book-open-reader"></i>
+          </div>
+          <h5 class="fw-bold">Online Loan System</h5>
+          <p class="text-muted small mb-0">
+            One-click borrowing requests, automatic loan period tracking (14 days for students, 30 days for staff), renewals, and automated fine calculation.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card-smart p-4 h-100 border-0 bg-light">
+          <div class="brand-icon mb-3" style="background: linear-gradient(135deg, var(--soft-purple), #6d28d9);">
+            <i class="fa-solid fa-chair"></i>
+          </div>
+          <h5 class="fw-bold">Visual Desk Booking</h5>
+          <p class="text-muted small mb-0">
+            Interactive 2D library floor map. Reserve quiet pods, computer workstations, or faculty suites with collision &amp; double-booking prevention.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card-smart p-4 h-100 border-0 bg-light">
+          <div class="brand-icon mb-3" style="background: linear-gradient(135deg, #059669, #10b981);">
+            <i class="fa-solid fa-diagram-project"></i>
+          </div>
+          <h5 class="fw-bold">Neo4j Graph AI</h5>
+          <p class="text-muted small mb-0">
+            Intelligent recommendations derived from reading relationships, category affinity, and co-borrowing patterns across the campus community.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card-smart p-4 h-100 border-0 bg-light">
+          <div class="brand-icon mb-3" style="background: linear-gradient(135deg, #d97706, #f59e0b);">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <h5 class="fw-bold">Role-Based Control</h5>
+          <p class="text-muted small mb-0">
+            Dedicated dashboards for Students, Faculty, and Admin with live Chart.js reports, user management, and real-time audit logs.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Call to Action Banner -->
+<section class="py-5" style="background: linear-gradient(135deg, #0f172a, #1e3a8a); color: white;">
+  <div class="container text-center py-4">
+    <h2 class="display-6 fw-bold mb-3 text-white">Ready to Reserve Your Study Space?</h2>
+    <p class="lead text-light opacity-75 mb-4" style="max-width: 600px; margin: 0 auto;">
+      Check live desk availability, pick your favorite study zone, and generate your instant digital library pass.
+    </p>
+    <div class="d-flex justify-content-center gap-3 flex-wrap">
+      <a href="{{ url_for('booking.desk_booking_view') }}" class="btn btn-primary-smart px-4 py-3">
+        <i class="fa-solid fa-calendar-check me-2"></i> Book Study Desk Now
+      </a>
+      <a href="{{ url_for('books.catalog') }}" class="btn btn-outline-light px-4 py-3 rounded-3 fw-semibold">
+        <i class="fa-solid fa-magnifying-glass me-2"></i> Search All Books
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}

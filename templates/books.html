@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% block title %}Books Catalog - Smart Library System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <!-- Page Header -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+      <h2 class="fw-bold mb-1">Library Books Catalog</h2>
+      <p class="text-muted small mb-0">Search, discover, borrow academic texts or place reservations on upcoming titles.</p>
+    </div>
+    {% if current_user.is_authenticated and current_user.is_admin %}
+    <div>
+      <button class="btn btn-primary-smart" data-bs-toggle="modal" data-bs-target="#modalAddBook">
+        <i class="fa-solid fa-plus me-1"></i> Add New Book
+      </button>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Search & Filter Controls -->
+  <div class="card-smart p-4 mb-4 bg-white">
+    <form action="{{ url_for('books.catalog') }}" method="GET" class="row g-3 align-items-center">
+      <div class="col-lg-4 col-md-6">
+        <label class="form-label small fw-semibold text-muted mb-1">Keywords Search</label>
+        <div class="input-group">
+          <span class="input-group-text bg-light border-end-0 text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
+          <input type="text" name="q" class="form-control form-control-smart border-start-0" placeholder="Title, author, ISBN..." value="{{ search_query }}">
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <label class="form-label small fw-semibold text-muted mb-1">Category</label>
+        <select name="category" class="form-select form-select-smart" onchange="this.form.submit()">
+          <option value="all" {% if selected_category == 'all' %}selected{% endif %}>All Disciplines</option>
+          {% for cat in categories %}
+          <option value="{{ cat.name }}" {% if selected_category == cat.name %}selected{% endif %}>{{ cat.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-lg-2 col-md-4">
+        <label class="form-label small fw-semibold text-muted mb-1">Availability</label>
+        <select name="availability" class="form-select form-select-smart" onchange="this.form.submit()">
+          <option value="all" {% if selected_avail == 'all' %}selected{% endif %}>All Copies</option>
+          <option value="available" {% if selected_avail == 'available' %}selected{% endif %}>Available Now</option>
+          <option value="reserved" {% if selected_avail == 'reserved' %}selected{% endif %}>On Loan / Reserved</option>
+        </select>
+      </div>
+
+      <div class="col-lg-2 col-md-4">
+        <label class="form-label small fw-semibold text-muted mb-1">Sort By</label>
+        <select name="sort" class="form-select form-select-smart" onchange="this.form.submit()">
+          <option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>Newest Added</option>
+          <option value="title_asc" {% if selected_sort == 'title_asc' %}selected{% endif %}>Title (A-Z)</option>
+          <option value="title_desc" {% if selected_sort == 'title_desc' %}selected{% endif %}>Title (Z-A)</option>
+          <option value="popular" {% if selected_sort == 'popular' %}selected{% endif %}>Most Popular</option>
+          <option value="available" {% if selected_sort == 'available' %}selected{% endif %}>Most Copies Avail</option>
+        </select>
+      </div>
+
+      <div class="col-lg-1 col-md-4 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary-smart w-100 py-2 justify-content-center">
+          Filter
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Results Summary -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="small text-muted">
+      Showing <strong>{{ books|length }}</strong> of <strong>{{ total_count }}</strong> catalog items
+      {% if search_query %} for "<em>{{ search_query }}</em>"{% endif %}
+    </div>
+    {% if search_query or selected_category != 'all' or selected_avail != 'all' %}
+    <a href="{{ url_for('books.catalog') }}" class="small text-danger text-decoration-none">
+      <i class="fa-solid fa-xmark me-1"></i> Clear Filters
+    </a>
+    {% endif %}
+  </div>
+
+  <!-- Book Cards Grid -->
+  {% if books %}
+  <div class="row g-4 mb-5">
+    {% for book in books %}
+    <div class="col-xl-3 col-lg-4 col-md-6">
+      <div class="card-smart book-card">
+        <div class="cover-container">
+          <img src="{{ book.cover_image }}" alt="{{ book.title }}" class="cover-img">
+          {% if book.is_available %}
+            <span class="book-badge-avail"><i class="fa-solid fa-circle-check me-1"></i> {{ book.available_copies }} Avail</span>
+          {% else %}
+            <span class="book-badge-unavail"><i class="fa-solid fa-clock me-1"></i> Checked Out</span>
+          {% endif %}
+        </div>
+        <div class="p-3 d-flex flex-column flex-grow-1">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="badge bg-light text-primary border small text-truncate" style="max-width: 150px;">{{ book.category }}</span>
+            <span class="text-muted small">{{ book.publication_year }}</span>
+          </div>
+          <h6 class="fw-bold mb-1 text-truncate" title="{{ book.title }}">{{ book.title }}</h6>
+          <p class="text-muted small mb-2 text-truncate">By {{ book.author }}</p>
+          
+          <div class="bg-light p-2 rounded-2 small text-muted mb-3 d-flex justify-content-between">
+            <span><i class="fa-solid fa-barcode me-1"></i> {{ book.isbn }}</span>
+            <span><i class="fa-solid fa-location-dot me-1"></i> {{ book.location.split('-')[0] }}</span>
+          </div>
+
+          <div class="mt-auto d-flex gap-2 pt-2 border-top">
+            <button type="button" class="btn btn-light btn-sm flex-fill fw-semibold border" data-bs-toggle="modal" data-bs-target="#bookDetailModal" data-book-id="{{ book.id }}">
+              <i class="fa-regular fa-eye me-1"></i> Details
+            </button>
+            {% if current_user.is_authenticated %}
+              {% if book.is_available %}
+              <form action="{{ url_for('loans.request_loan', book_id=book.id) }}" method="POST" class="flex-fill">
+                <button type="submit" class="btn btn-primary-smart btn-sm w-100 justify-content-center">
+                  <i class="fa-solid fa-book-reader me-1"></i> Borrow
+                </button>
+              </form>
+              {% else %}
+              <form action="{{ url_for('booking.reserve_book', book_id=book.id) }}" method="POST" class="flex-fill">
+                <button type="submit" class="btn btn-outline-smart btn-sm w-100 justify-content-center">
+                  <i class="fa-solid fa-bookmark me-1"></i> Reserve
+                </button>
+              </form>
+              {% endif %}
+            {% else %}
+              <a href="{{ url_for('auth.login') }}" class="btn btn-outline-smart btn-sm flex-fill text-center">
+                Log In
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if total_pages > 1 %}
+  <nav class="d-flex justify-content-center mb-5">
+    <ul class="pagination">
+      {% for p in range(1, total_pages + 1) %}
+      <li class="page-item {% if p == page %}active{% endif %}">
+        <a class="page-link" href="{{ url_for('books.catalog', page=p, q=search_query, category=selected_category, availability=selected_avail, sort=selected_sort) }}">
+          {{ p }}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </nav>
+  {% endif %}
+
+  {% else %}
+  <div class="text-center py-5 my-4 bg-white rounded-4 border">
+    <i class="fa-solid fa-book-open-reader fs-1 text-muted mb-3 d-block"></i>
+    <h4>No Books Found Matching Your Search</h4>
+    <p class="text-muted small">Try broadening your search keywords or switching filters.</p>
+    <a href="{{ url_for('books.catalog') }}" class="btn btn-primary-smart mt-2">
+      Reset All Filters
+    </a>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Modal: Add New Book (Admin Only) -->
+{% if current_user.is_authenticated and current_user.is_admin %}
+<div class="modal fade" id="modalAddBook" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="fw-bold"><i class="fa-solid fa-plus text-primary me-2"></i>Add New Book to Catalog</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="{{ url_for('books.add_book') }}" method="POST">
+        <div class="modal-body p-4">
+          <div class="row g-3 mb-3">
+            <div class="col-md-8">
+              <label class="form-label small fw-semibold">Book Title *</label>
+              <input type="text" name="title" class="form-control form-control-smart" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">ISBN *</label>
+              <input type="text" name="isbn" class="form-control form-control-smart" placeholder="978-..." required>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Author(s) *</label>
+              <input type="text" name="author" class="form-control form-control-smart" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Category / Field</label>
+              <select name="category" class="form-select form-select-smart" required>
+                {% for cat in categories %}
+                <option value="{{ cat.name }}">{{ cat.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">Total Quantity</label>
+              <input type="number" name="quantity" class="form-control form-control-smart" value="3" min="1" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">Publisher</label>
+              <input type="text" name="publisher" class="form-control form-control-smart" value="Academic Press">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">Publication Year</label>
+              <input type="number" name="publication_year" class="form-control form-control-smart" value="2024">
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Shelf Location</label>
+              <input type="text" name="location" class="form-control form-control-smart" value="Floor 2 - Shelf CS-101">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Cover Image URL</label>
+              <input type="url" name="cover_image" class="form-control form-control-smart" placeholder="https://...">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Book Synopsis / Description</label>
+            <textarea name="description" class="form-control form-control-smart" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary-smart">
+            <i class="fa-solid fa-save me-1"></i> Save to Database &amp; Neo4j
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,278 @@
+{% extends 'base.html' %}
+{% block title %}Faculty & Staff Dashboard - Smart Library{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <!-- Faculty Welcome Banner -->
+  <div class="card-smart p-4 p-md-5 mb-4 bg-white border-0 shadow-sm" style="background: linear-gradient(135deg, rgba(2, 132, 199, 0.06), rgba(124, 58, 237, 0.06)); border: 1px solid var(--border-color);">
+    <div class="row align-items-center g-3">
+      <div class="col-md-8">
+        <span class="badge bg-info text-white px-3 py-1 mb-2">Faculty &amp; Staff Portal</span>
+        <h2 class="fw-bold text-dark mb-1">Welcome, {{ current_user.name }}</h2>
+        <p class="text-muted small mb-0">
+          Staff ID: <strong>{{ current_user.staff_id or 'FAC-CAMPUS' }}</strong> &bull; Department: <strong>{{ current_user.department }}</strong> &bull; Privileges: <strong>30-day Loan Term / 10 Books Quota</strong>
+        </p>
+      </div>
+      <div class="col-md-4 text-md-end">
+        <a href="{{ url_for('booking.desk_booking_view') }}" class="btn btn-purple-smart me-2">
+          <i class="fa-solid fa-briefcase me-1"></i> Faculty Suites
+        </a>
+        <a href="{{ url_for('books.catalog') }}" class="btn btn-outline-smart">
+          <i class="fa-solid fa-book-open me-1"></i> Research Books
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Faculty KPI Metric Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+      <div class="card-stat bg-white">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="text-muted small fw-semibold text-uppercase">Active Faculty Loans</div>
+            <div class="stat-number fs-2 text-primary">{{ active_loans|length }}</div>
+          </div>
+          <div class="icon-box bg-primary-subtle text-primary">
+            <i class="fa-solid fa-book-bookmark"></i>
+          </div>
+        </div>
+        <div class="small text-muted mt-2">Max allowed: 10 books</div>
+      </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+      <div class="card-stat bg-white">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="text-muted small fw-semibold text-uppercase">Reserved Desks</div>
+            <div class="stat-number fs-2 text-purple" style="color: var(--soft-purple);">{{ active_desk_bookings|length }}</div>
+          </div>
+          <div class="icon-box bg-purple-subtle text-primary" style="background: var(--purple-subtle);">
+            <i class="fa-solid fa-chair text-purple" style="color: var(--soft-purple);"></i>
+          </div>
+        </div>
+        <div class="small text-muted mt-2">Zone D &amp; Private pods</div>
+      </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+      <div class="card-stat bg-white">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="text-muted small fw-semibold text-uppercase">Book Requests</div>
+            <div class="stat-number fs-2 text-warning">{{ active_reservations|length }}</div>
+          </div>
+          <div class="icon-box bg-warning-subtle text-warning">
+            <i class="fa-solid fa-bookmark"></i>
+          </div>
+        </div>
+        <div class="small text-muted mt-2">Pending reserve holds</div>
+      </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+      <div class="card-stat bg-white">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="text-muted small fw-semibold text-uppercase">Campus Inventory</div>
+            <div class="stat-number fs-2 text-success">{{ total_books }}</div>
+          </div>
+          <div class="icon-box bg-success-subtle text-success">
+            <i class="fa-solid fa-boxes-stacked"></i>
+          </div>
+        </div>
+        <div class="small text-muted mt-2">{{ available_books }} copies available</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Academic Research Recommendations -->
+  <div class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <h4 class="fw-bold mb-0">
+          <i class="fa-solid fa-microscope text-primary me-2"></i>Curated Faculty Research Recommendations
+        </h4>
+        <span class="text-muted small">Academic references aligned with your department ({{ current_user.department }})</span>
+      </div>
+      <span class="graph-badge">
+        <i class="fa-solid fa-diagram-project"></i> Neo4j Knowledge Graph
+      </span>
+    </div>
+
+    <div class="row g-3">
+      {% for rec in recommendations %}
+      <div class="col-md-6 col-xl-3">
+        <div class="card-smart h-100 bg-white p-3 d-flex flex-column">
+          <div class="position-relative mb-2" style="height: 180px; overflow: hidden; border-radius: 10px;">
+            <img src="{{ rec.cover_image }}" alt="" class="w-100 h-100 object-fit-cover">
+            <span class="badge bg-dark bg-opacity-75 position-absolute top-0 start-0 m-2 small">
+              {{ rec.category }}
+            </span>
+          </div>
+          <h6 class="fw-bold mb-1 text-truncate" title="{{ rec.title }}">{{ rec.title }}</h6>
+          <div class="text-muted small mb-2">By {{ rec.author }}</div>
+          <div class="bg-light p-2 rounded-2 small text-primary mb-3 mt-auto" style="font-size: 0.78rem;">
+            <i class="fa-solid fa-graduation-cap me-1"></i> {{ rec.rec_reason }}
+          </div>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-sm btn-light border flex-fill" data-bs-toggle="modal" data-bs-target="#bookDetailModal" data-book-id="{{ rec._id }}">
+              Preview
+            </button>
+            <form action="{{ url_for('loans.request_loan', book_id=rec._id) }}" method="POST" class="flex-fill">
+              <button type="submit" class="btn btn-sm btn-primary-smart w-100 justify-content-center">
+                Borrow
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Faculty Active Loans -->
+    <div class="col-lg-8">
+      <div class="card-smart bg-white overflow-hidden mb-4">
+        <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+          <h5 class="fw-bold mb-0 text-dark">
+            <i class="fa-solid fa-book text-primary me-2"></i>My Faculty Loans
+          </h5>
+          <span class="badge bg-light text-primary border">30-Day Allowance</span>
+        </div>
+
+        {% if active_loans %}
+        <div class="table-responsive">
+          <table class="table table-custom mb-0">
+            <thead>
+              <tr>
+                <th>Title &amp; Author</th>
+                <th>Issue Date</th>
+                <th>Due Date</th>
+                <th>Renew</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for loan in active_loans %}
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <img src="{{ loan.book_cover }}" alt="" class="rounded-2 shadow-sm" style="width: 36px; height: 48px; object-fit: cover;">
+                    <div>
+                      <div class="fw-bold text-dark text-truncate" style="max-width: 260px;">{{ loan.book_title }}</div>
+                      <div class="text-muted small">{{ loan.book_author }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td>{{ loan.issue_date.strftime('%Y-%m-%d') }}</td>
+                <td>
+                  <span class="{% if loan.is_overdue %}text-danger fw-bold{% else %}text-dark{% endif %}">
+                    {{ loan.due_date.strftime('%Y-%m-%d') }}
+                  </span>
+                </td>
+                <td>
+                  <form action="{{ url_for('loans.renew_loan', loan_id=loan.id) }}" method="POST">
+                    <button type="submit" class="btn btn-sm btn-outline-primary" {% if loan.renew_count >= 2 %}disabled{% endif %}>
+                      <i class="fa-solid fa-rotate-right me-1"></i> Renew
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="text-center py-4 text-muted small">
+          No books currently checked out under faculty quota.
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Faculty Desk Bookings -->
+      <div class="card-smart bg-white overflow-hidden">
+        <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+          <h5 class="fw-bold mb-0 text-dark">
+            <i class="fa-solid fa-chair text-primary me-2"></i>My Reserved Faculty Suites
+          </h5>
+          <a href="{{ url_for('booking.desk_booking_view') }}" class="btn btn-sm btn-purple-smart">Book Faculty Desk</a>
+        </div>
+
+        {% if active_desk_bookings %}
+        <div class="table-responsive">
+          <table class="table table-custom mb-0">
+            <thead>
+              <tr>
+                <th>Suite #</th>
+                <th>Zone</th>
+                <th>Schedule</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for d in active_desk_bookings %}
+              <tr>
+                <td><span class="badge bg-purple-subtle text-primary border px-3 py-2 fw-bold fs-6" style="background: var(--purple-subtle); color: var(--soft-purple);">{{ d.desk_number }}</span></td>
+                <td><span class="fw-semibold text-dark">{{ d.zone }}</span></td>
+                <td>
+                  <div>{{ d.booking_date }}</div>
+                  <small class="text-muted">{{ d.start_time }} - {{ d.end_time }}</small>
+                </td>
+                <td>
+                  <form action="{{ url_for('booking.cancel_desk', booking_id=d.id) }}" method="POST" onsubmit="return confirm('Cancel this suite reservation?');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="text-center py-4 text-muted small">
+          No upcoming faculty suite reservations.
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Right Column: Notifications & Quick Access -->
+    <div class="col-lg-4">
+      <div class="card-smart p-4 bg-white mb-4">
+        <h5 class="fw-bold mb-3"><i class="fa-regular fa-bell text-primary me-2"></i>Library Notices</h5>
+        {% if notifications %}
+        <div class="list-group list-group-flush">
+          {% for n in notifications %}
+          <div class="list-group-item px-0 py-2 border-0 border-bottom">
+            <strong class="small text-dark d-block">{{ n.title }}</strong>
+            <p class="text-muted small mb-0">{{ n.message }}</p>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center text-muted py-3 small">
+          No notices at this time.
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="card-smart p-4 bg-white">
+        <h6 class="fw-bold mb-3">Faculty Resource Center</h6>
+        <p class="text-muted small mb-3">
+          Need a book not yet listed in the library catalog? You can request acquisitions directly through the librarian desk.
+        </p>
+        <div class="d-grid gap-2">
+          <a href="{{ url_for('books.catalog') }}" class="btn btn-light text-start border">
+            <i class="fa-solid fa-magnifying-glass me-2 text-primary"></i> Complete Catalog
+          </a>
+          <a href="{{ url_for('booking.desk_booking_view') }}" class="btn btn-light text-start border">
+            <i class="fa-solid fa-door-open me-2 text-primary"></i> Reserve Research Suite
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

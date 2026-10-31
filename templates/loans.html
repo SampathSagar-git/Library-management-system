@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+{% block title %}Book Loans & Returns - Smart Library{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+      <h2 class="fw-bold mb-1">
+        {% if current_user.is_admin %}Library Loan Management{% else %}My Book Loans &amp; Circulation{% endif %}
+      </h2>
+      <p class="text-muted small mb-0">Track active borrowings, due dates, automated fines, and loan renewals.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{{ url_for('books.catalog') }}" class="btn btn-primary-smart">
+        <i class="fa-solid fa-plus me-1"></i> Borrow More Books
+      </a>
+    </div>
+  </div>
+
+  <!-- Loan Quick Stat Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <a href="{{ url_for('loans.loans_view', status='active') }}" class="text-decoration-none">
+        <div class="card-stat bg-white {% if status_filter == 'active' %}border-primary shadow-md{% endif %}">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="text-muted small fw-semibold text-uppercase">Active Borrowings</div>
+              <div class="stat-number fs-2 text-primary">{{ active_count }}</div>
+            </div>
+            <div class="icon-box bg-primary-subtle text-primary">
+              <i class="fa-solid fa-book-open-reader"></i>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-md-4">
+      <a href="{{ url_for('loans.loans_view', status='pending') }}" class="text-decoration-none">
+        <div class="card-stat bg-white {% if status_filter == 'pending' %}border-warning shadow-md{% endif %}">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="text-muted small fw-semibold text-uppercase">Pending Approval</div>
+              <div class="stat-number fs-2 text-warning">{{ pending_count }}</div>
+            </div>
+            <div class="icon-box bg-warning-subtle text-warning">
+              <i class="fa-solid fa-clock"></i>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-md-4">
+      <a href="{{ url_for('loans.loans_view', status='returned') }}" class="text-decoration-none">
+        <div class="card-stat bg-white {% if status_filter == 'returned' %}border-success shadow-md{% endif %}">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="text-muted small fw-semibold text-uppercase">Returned History</div>
+              <div class="stat-number fs-2 text-success">{{ returned_count }}</div>
+            </div>
+            <div class="icon-box bg-success-subtle text-success">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Loans Table Card -->
+  <div class="card-smart bg-white overflow-hidden">
+    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+      <div class="fw-bold text-dark">
+        <i class="fa-solid fa-list-check me-2 text-primary"></i>Loans List
+        {% if status_filter != 'all' %}
+          <span class="badge bg-light text-primary border ms-2">Filter: {{ status_filter.capitalize() }}</span>
+        {% endif %}
+      </div>
+      {% if status_filter != 'all' %}
+      <a href="{{ url_for('loans.loans_view') }}" class="small text-muted text-decoration-none">
+        Show All Loans
+      </a>
+      {% endif %}
+    </div>
+
+    {% if loans %}
+    <div class="table-responsive">
+      <table class="table table-custom mb-0">
+        <thead>
+          <tr>
+            <th>Book Details</th>
+            {% if current_user.is_admin %}
+            <th>Borrower</th>
+            {% endif %}
+            <th>Issue Date</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Fine</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for loan in loans %}
+          <tr>
+            <td>
+              <div class="d-flex align-items-center gap-3">
+                <img src="{{ loan.book_cover }}" alt="" class="rounded-2 shadow-sm" style="width: 44px; height: 58px; object-fit: cover;">
+                <div>
+                  <div class="fw-bold text-dark">{{ loan.book_title }}</div>
+                  <div class="text-muted small">By {{ loan.book_author }} &bull; ISBN: {{ loan.book_isbn }}</div>
+                </div>
+              </div>
+            </td>
+            {% if current_user.is_admin %}
+            <td>
+              <div class="fw-semibold">{{ loan.user_name }}</div>
+              <div class="text-muted small">{{ loan.user_email }} ({{ loan.user_role }})</div>
+            </td>
+            {% endif %}
+            <td>{{ loan.issue_date.strftime('%Y-%m-%d') if loan.issue_date else 'N/A' }}</td>
+            <td>
+              {% if loan.due_date %}
+                <span class="{% if loan.is_overdue %}text-danger fw-bold{% else %}text-dark{% endif %}">
+                  {{ loan.due_date.strftime('%Y-%m-%d') }}
+                </span>
+                {% if loan.is_overdue and loan.status == 'active' %}
+                  <div class="badge bg-danger-subtle text-danger small mt-1">
+                    {{ loan.overdue_days }} days overdue
+                  </div>
+                {% endif %}
+              {% else %}
+                <span class="text-muted">&mdash;</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if loan.status == 'active' %}
+                {% if loan.is_overdue %}
+                  <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-1">Overdue</span>
+                {% else %}
+                  <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1">Active Loan</span>
+                {% endif %}
+              {% elif loan.status == 'pending' %}
+                <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-3 py-1">Pending Approval</span>
+              {% elif loan.status == 'returned' %}
+                <span class="badge bg-light text-secondary border px-3 py-1">Returned</span>
+              {% else %}
+                <span class="badge bg-secondary px-3 py-1">{{ loan.status.capitalize() }}</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if loan.fine_amount > 0 %}
+                <span class="fw-bold {% if loan.fine_status == 'paid' %}text-success{% else %}text-danger{% endif %}">
+                  ${{ "%.2f"|format(loan.fine_amount) }}
+                </span>
+                <span class="badge bg-light text-muted border small d-block">{{ loan.fine_status.capitalize() }}</span>
+              {% else %}
+                <span class="text-muted small">$0.00</span>
+              {% endif %}
+            </td>
+            <td>
+              <div class="d-flex gap-2">
+                {% if loan.status == 'active' %}
+                  <form action="{{ url_for('loans.renew_loan', loan_id=loan.id) }}" method="POST">
+                    <button type="submit" class="btn btn-sm btn-outline-primary" title="Extend due date by 7 days">
+                      <i class="fa-solid fa-rotate-right me-1"></i> Renew ({{ loan.renew_count }}/2)
+                    </button>
+                  </form>
+                {% endif %}
+
+                {% if current_user.is_admin %}
+                  {% if loan.status == 'pending' %}
+                  <form action="{{ url_for('loans.approve_loan', loan_id=loan.id) }}" method="POST">
+                    <button type="submit" class="btn btn-sm btn-success">
+                      <i class="fa-solid fa-check"></i> Approve
+                    </button>
+                  </form>
+                  <form action="{{ url_for('loans.reject_loan', loan_id=loan.id) }}" method="POST">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                      Reject
+                    </button>
+                  </form>
+                  {% elif loan.status in ['active', 'overdue'] %}
+                  <form action="{{ url_for('loans.process_return', loan_id=loan.id) }}" method="POST" onsubmit="return confirm('Process return for this book?');">
+                    <button type="submit" class="btn btn-sm btn-primary-smart">
+                      <i class="fa-solid fa-inbox me-1"></i> Check In Return
+                    </button>
+                  </form>
+                  {% endif %}
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="text-center py-5 text-muted">
+      <i class="fa-solid fa-book-bookmark fs-2 text-secondary mb-2 d-block"></i>
+      No loans match the current criteria.
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
